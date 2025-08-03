@@ -26,6 +26,7 @@ flowchart TD
     SearchingMore -->|No| SelectResult[User selects a result]
 
     SelectResult --> SubmissionForm[Submission form start]
+    SubmissionForm --> Cancel[User cancels submission] --> EndSelect
     SubmissionForm --> Submit([Show submission form])
     Submit --> EndSelect
   end
@@ -48,6 +49,6 @@ flowchart TD
     ShowError --> ConfirmError
     ConfirmError --> SubmitButton
     PopupSuccess --> OperatorSubmission[Submit queue entry to backend for operator to handle]
-    OperatorSubmission --> Search
+    OperatorSubmission --> ReturnToSearch([Return to song selection])
   end
 ```
