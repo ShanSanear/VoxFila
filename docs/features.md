@@ -12,6 +12,8 @@ Operator MUST be required to login to access its functionality.
 
 Operator page MUST be separate from normal page - so just in case they can also add people themselves just like the normal users
 
+Operator MUST be able to start and end session
+
 Operator MUST have a way to "merge" multiple people into one, to prevent (accidental or not) possibility of people jumping queue - or by moving song to somebody else
 
 Operator MUST have a way to edit given queue entry - be it by changing who is singing or by changing song on the fly
@@ -38,4 +40,16 @@ User SHOULD be able to specify their own songs, in case it is not available in l
 
 User SHOULD be able to check behavior of the app in clear and concise language, to reduce any kind of confusion
 
-User MAY be able to submit their feedback
+User MAY be able to submit their feedback as a simple form for creator of the app to then review
+
+## Admin-side
+
+Admin SHOULD be able to do the same things as operator
+
+Admin MUST be able to review feedback for the app
+
+## General info
+
+App MUST handle starting and ending session - when ending session it should clear queue from entries that were unused
+
+App MAY show links to other webpages to let users and operators known about author and websites/programs they work with
