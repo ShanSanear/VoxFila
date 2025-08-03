@@ -1,0 +1,23 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "cargo fmt",
+            "type": "shell",
+            "command": "cargo fmt",
+            "presentation": {
+                "reveal": "never"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "cargo check",
+            "type": "shell",
+            "command": "cargo check",
+            "presentation": {
+                "reveal": "always"
+            },
+            "problemMatcher": "$rustc"
+        }
+    ]
+}

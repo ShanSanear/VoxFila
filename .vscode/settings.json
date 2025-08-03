@@ -1,0 +1,17 @@
+{
+    "editor.formatOnSave": true,
+    "rust-analyzer.rustfmt.overrideCommand": null, // Use default rustfmt config
+    "[rust]": {
+        "editor.defaultFormatter": "rust-lang.rust-analyzer"
+    },
+    "rust-analyzer.check.command": "clippy",
+    "rust-analyzer.cargo.allFeatures": true,
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "name": "Voxfila",
+            "database": "voxfila.db"
+        }
+    ]
+}

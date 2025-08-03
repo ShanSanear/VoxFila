@@ -1,0 +1,21 @@
+[workspace]
+resolver = "3"
+members = ["app", "server", "shared"]
+
+[workspace.dependencies]
+dioxus = { version = "0.6", features = ["router", "fullstack"] }
+log = { version = "0.4.27" }
+dioxus-logger = { version = "0.6" }
+server = { path = "server" }
+shared = { path = "shared" }
+
+
+[profile.wasm-dev]
+inherits = "dev"
+opt-level = 1
+
+[profile.server-dev]
+inherits = "dev"
+
+[profile.android-dev]
+inherits = "dev"

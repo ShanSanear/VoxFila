@@ -1,0 +1,41 @@
+[package]
+name = "app"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+dioxus = { workspace = true, features = [
+    "web",
+    "router",
+    "fullstack",
+    "signals",
+    "hooks",
+    "asset",
+    "logger",
+    "launch",
+    "router",
+] }
+dioxus-logger = { workspace = true }
+server = { workspace = true }
+shared = { workspace = true }
+
+dioxus-i18n = "0.4.3"
+# gloo-storage = "0.3.0"
+# gloo-utils = "0.2.0"
+# input-rs = { version = "0.2.5", features = ["dio"] }
+log = { workspace = true }
+# wasm-bindgen = "0.2.100"
+# wasm-bindgen-futures = "0.4.50"
+# wasm-logger = "0.2.0"
+# web-sys = { version = "0.3.77", features = ["Navigator", "Window"] }
+tokio = { version = "1.45.1", features = [
+    "parking_lot",
+    "rt-multi-thread",
+    "macros",
+], optional = true }
+table-rs = { version = "0.0.3", features = ["dio"] }
+maplit = "1.0.2"
+
+[features]
+server = ["dioxus/server", "server/db", "tokio"]
+web = ["dioxus/web"]
