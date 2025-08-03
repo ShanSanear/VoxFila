@@ -2,4 +2,4 @@
 pub mod database;
 
 pub mod songs;
-pub use songs::{list_songs, search_songs};
+pub use songs::{list_songs, list_songs_dummy, search_songs};

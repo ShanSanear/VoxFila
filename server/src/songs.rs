@@ -55,3 +55,26 @@ pub async fn save_song(song: NewSong) -> Result<SongDetails, ServerFnError> {
     info!("Saved song with id: {}", song.song_id);
     Ok(song)
 }
+
+#[server]
+pub async fn list_songs_dummy() -> Result<Vec<SongDetails>, ServerFnError> {
+    // Simulate a delay that might occur in a real database query
+    tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
+
+    Ok(vec![
+        SongDetails {
+            song_id: 1,
+            artist: "Dummy Artist".into(),
+            title: "Dummy Title".into(),
+            yturl: Some("https://www.youtube.com/watch?v=dQw4w9WgXcQ".into()),
+            isingurl: Some("https://www.example.com/ising/dummy".into()),
+        },
+        SongDetails {
+            song_id: 2,
+            artist: "Dummy Artist 2".into(),
+            title: "Dummy Title 2".into(),
+            yturl: Some("https://www.youtube.com/watch?v=dQw4w9WgXcQ".into()),
+            isingurl: Some("https://www.example.com/ising/dummy".into()),
+        },
+    ])
+}

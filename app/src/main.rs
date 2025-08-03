@@ -31,6 +31,6 @@ fn App() -> Element {
         document::Link { rel: "icon", href: FAVICON }
         document::Link { rel: "stylesheet", href: TAILWIND_CSS }
         document::Title { "VoxFila" }
-        main { Router::<Route> {} }
+        main { class: "min-h-screen bg-base-200", Router::<Route> {} }
     }
 }
