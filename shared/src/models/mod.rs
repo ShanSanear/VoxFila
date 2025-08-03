@@ -1,6 +1,5 @@
 pub mod queue_entries;
 pub mod session;
-pub mod singer_order;
 pub mod singers;
 pub mod songs;
 pub use queue_entries::{NewQueueEntry, QueueEntryDetails, QueueEntryUpdate};
