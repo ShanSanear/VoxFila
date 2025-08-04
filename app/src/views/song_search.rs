@@ -3,13 +3,15 @@ use dioxus_logger::tracing::{debug, info};
 
 use server::songs::{list_songs_dummy, search_songs};
 
+use crate::components::SongCard;
+
 #[component]
 pub fn SongSearch() -> Element {
     let mut current_search = use_signal(|| String::new());
     let songs = use_resource(move || async move {
         if current_search().len() > 3 {
-            // search_songs(current_search().clone()).await
-            list_songs_dummy().await
+            search_songs(current_search().clone()).await
+            // list_songs_dummy().await
         } else {
             Ok(vec![])
         }
@@ -35,12 +37,20 @@ pub fn SongSearch() -> Element {
                     Some(Ok(songs_list)) => {
                         rsx! {
                             for song in songs_list.iter() {
-                                div { class: "card w-full max-w-md bg-base-100 shadow-xl my-2",
-                                    div { class: "card-body",
-                                        h2 { class: "card-title", "{song.title}" }
-                                        p { class: "text-sm", "{song.artist}" }
-                                    }
+                                a { href: song.yturl.clone(),
+                                    SongCard { song: song.clone() }
                                 }
+                            }
+                            if songs_list.is_empty() {
+                                div { class: "mt-4 text-lg", "No songs found." }
+                                button {
+                                    class: "btn btn-primary mt-2",
+                                    onclick: move |_| {
+                                        debug!("Requesting adding song");
+                                    },
+                                    disabled: true,
+                                    "Request adding song"
+                                } // TODO add modal
                             }
                         }
                     }

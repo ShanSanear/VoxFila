@@ -1,5 +1,47 @@
 /*! tailwindcss v4.1.8 | MIT License | https://tailwindcss.com */
 @layer properties;
+.modal {
+  pointer-events: none;
+  visibility: hidden;
+  position: fixed;
+  inset: calc(0.25rem * 0);
+  margin: calc(0.25rem * 0);
+  display: grid;
+  height: 100%;
+  max-height: none;
+  width: 100%;
+  max-width: none;
+  align-items: center;
+  justify-items: center;
+  background-color: transparent;
+  padding: calc(0.25rem * 0);
+  color: inherit;
+  overflow-x: hidden;
+  transition: translate 0.3s ease-out, visibility 0.3s allow-discrete, background-color 0.3s ease-out, opacity 0.1s ease-out;
+  overflow-y: hidden;
+  overscroll-behavior: contain;
+  z-index: 999;
+  &::backdrop {
+    display: none;
+  }
+  &.modal-open, &[open], &:target {
+    pointer-events: auto;
+    visibility: visible;
+    opacity: 100%;
+    background-color: oklch(0% 0 0/ 0.4);
+    .modal-box {
+      translate: 0 0;
+      scale: 1;
+      opacity: 1;
+    }
+  }
+  @starting-style {
+    &.modal-open, &[open], &:target {
+      visibility: hidden;
+      opacity: 0%;
+    }
+  }
+}
 .drawer-side {
   pointer-events: none;
   visibility: hidden;
@@ -1166,6 +1208,25 @@
     cursor: not-allowed;
   }
 }
+.modal-box {
+  grid-column-start: 1;
+  grid-row-start: 1;
+  max-height: 100vh;
+  width: calc(11/12 * 100%);
+  max-width: 32rem;
+  background-color: var(--color-base-100);
+  padding: calc(0.25rem * 6);
+  transition: translate 0.3s ease-out, scale 0.3s ease-out, opacity 0.2s ease-out 0.05s, box-shadow 0.3s ease-out;
+  border-top-left-radius: var(--modal-tl, var(--radius-box));
+  border-top-right-radius: var(--modal-tr, var(--radius-box));
+  border-bottom-left-radius: var(--modal-bl, var(--radius-box));
+  border-bottom-right-radius: var(--modal-br, var(--radius-box));
+  scale: 95%;
+  opacity: 0;
+  box-shadow: oklch(0% 0 0/ 0.25) 0px 25px 50px -12px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
 .drawer-content {
   grid-column-start: 2;
   grid-row-start: 1;
@@ -1273,6 +1334,9 @@
       }
     }
   }
+}
+.mt-2 {
+  margin-top: calc(var(--spacing) * 2);
 }
 .mt-4 {
   margin-top: calc(var(--spacing) * 4);
@@ -1551,6 +1615,10 @@
 .ease-out {
   --tw-ease: var(--ease-out);
   transition-timing-function: var(--ease-out);
+}
+.btn-primary {
+  --btn-color: var(--color-primary);
+  --btn-fg: var(--color-primary-content);
 }
 @layer theme, base, components, utilities;
 @layer theme {
