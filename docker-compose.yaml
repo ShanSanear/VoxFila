@@ -8,13 +8,22 @@ services:
     environment:
       POSTGRES_PASSWORD: postgres
     restart: always
+    networks:
+      - default
   pg_admin:
     image: dpage/pgadmin4:latest
     ports:
-      - 5060:80
+      - 5090:80
     environment:
       PGADMIN_DEFAULT_EMAIL: admin@example.com
       PGADMIN_DEFAULT_PASSWORD: admin
     restart: always
+    volumes:
+      - ./pgadmin/servers.json:/pgadmin4/servers.json
+    networks:
+      - default
 volumes:
   db-data:
+networks:
+  default:
+    driver: bridge
