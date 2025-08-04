@@ -42,6 +42,8 @@ User SHOULD be able to check behavior of the app in clear and concise language, 
 
 User MAY be able to submit their feedback as a simple form for creator of the app to then review
 
+User MAY be able to add multiple songs in one go, as a "shopping cart" type of thing to then be able to send all of them at once
+
 ## Admin-side
 
 Admin SHOULD be able to do the same things as operator
