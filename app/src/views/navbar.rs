@@ -15,7 +15,6 @@ pub fn Navbar() -> Element {
             // Optional: right side for future elements like account/settings
             div { class: "navbar-end", LanguageSelector {} }
         }
-
         Outlet::<Route> {}
     }
 }

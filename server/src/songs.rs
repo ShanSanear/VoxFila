@@ -20,6 +20,21 @@ pub async fn list_songs() -> Result<Vec<SongDetails>, ServerFnError> {
     Ok(results)
 }
 
+#[server]
+pub async fn get_song(id: i32) -> Result<SongDetails, ServerFnError> {
+    info!("Fetching song with id: {}", id);
+    let db = get_db().await;
+    let song = sqlx::query_as!(
+        SongDetails,
+        "SELECT song_id, artist, title, yturl, isingurl FROM songs WHERE song_id = $1",
+        id
+    )
+    .fetch_one(db)
+    .await?;
+    info!("Found song: {:?}", song);
+    Ok(song)
+}
+
 /// List songs where artist or title matches the query (case-insensitive, fuzzy)
 #[server]
 pub async fn search_songs(query: String) -> Result<Vec<SongDetails>, ServerFnError> {

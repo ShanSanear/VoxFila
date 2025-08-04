@@ -5,6 +5,8 @@ use server::songs::{list_songs_dummy, search_songs};
 
 use crate::components::SongCard;
 
+use crate::views::Route;
+
 #[component]
 pub fn SongSearch() -> Element {
     let mut current_search = use_signal(|| String::new());
@@ -37,7 +39,10 @@ pub fn SongSearch() -> Element {
                     Some(Ok(songs_list)) => {
                         rsx! {
                             for song in songs_list.iter() {
-                                a { href: song.yturl.clone(),
+                                Link {
+                                    to: Route::SongRequest {
+                                        id: song.song_id,
+                                    },
                                     SongCard { song: song.clone() }
                                 }
                             }
