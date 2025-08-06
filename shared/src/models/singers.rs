@@ -14,6 +14,12 @@ pub struct SingerDetails {
 }
 
 #[derive(Deserialize, Serialize, PartialEq, Clone, Debug, sqlx::FromRow)]
+pub struct SecondSingerDetails {
+    pub second_singer_id: i32,
+    pub second_singer_name: String,
+}
+
+#[derive(Deserialize, Serialize, PartialEq, Clone, Debug, sqlx::FromRow)]
 pub struct SingerUpdate {
     pub singer_id: i32,
     pub name: String,
