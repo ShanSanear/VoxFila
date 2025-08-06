@@ -14,6 +14,7 @@ pub async fn create_queue_entry(
     singer_name: String,
     song_id: i32,
     second_singer_name: Option<String>,
+    notes: String,
 ) -> Result<i32, ServerFnError> {
     let db = get_db().await;
     let singer = get_singer(singer_name).await?;
@@ -27,27 +28,30 @@ pub async fn create_queue_entry(
     let result = match second_singer {
         Some(second_singer) => {
             sqlx::query_scalar!(
-                "INSERT INTO queue_entries (session_id, singer_id, song_id, second_singer_id)
+                "INSERT INTO queue_entries (session_id, singer_id, song_id, second_singer_id, notes)
+                 VALUES ($1, $2, $3, $4, $5)
+                 RETURNING queue_entry_id",
+                session_id,
+                singer.singer_id,
+                song_id,
+                second_singer.singer_id,
+                notes
+            )
+        }
+        None => {
+            sqlx::query_scalar!(
+                "INSERT INTO queue_entries (session_id, singer_id, song_id, notes)
                  VALUES ($1, $2, $3, $4)
                  RETURNING queue_entry_id",
                 session_id,
                 singer.singer_id,
                 song_id,
-                second_singer.singer_id
-            )
-        }
-        None => {
-            sqlx::query_scalar!(
-                "INSERT INTO queue_entries (session_id, singer_id, song_id)
-                 VALUES ($1, $2, $3)
-                 RETURNING queue_entry_id",
-                session_id,
-                singer.singer_id,
-                song_id
+                notes
             )
         }
     };
     let out = result.fetch_one(db).await?;
+
     info!("Returning {} queue_entry", out);
     Ok(out)
 }

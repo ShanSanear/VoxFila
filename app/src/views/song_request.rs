@@ -1,6 +1,6 @@
 use dioxus::prelude::*;
-use dioxus_logger::tracing::{debug, info};
-use server::songs::get_song;
+use dioxus_logger::tracing::{debug, error, info};
+use server::{create_queue_entry, songs::get_song};
 use shared::models::SongDetails;
 
 use crate::components::SongCard;
@@ -40,7 +40,7 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
                         second_singer_enabled.set(e.checked());
                     },
                 }
-
+            
             }
             if second_singer_enabled() {
                 input {
@@ -67,10 +67,24 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
             button {
                 class: "btn btn-primary mt-4",
                 onclick: move |_| {
-                    debug!(
-                        "Submitting song request with singer: {}, second singer: {}, notes: {}",
-                        singer_name(), second_singer_name(), notes()
-                    );
+                    async move {
+                        debug!(
+                            "Submitting song request with singer: {}, second singer: {}, notes: {}",
+                            singer_name(), second_singer_name(), notes()
+                        );
+                        create_queue_entry(
+                                1,
+                                singer_name(),
+                                props.id,
+                                Some(second_singer_name()),
+                                notes(),
+                            )
+                            .await
+                            .map_err(|e| {
+                                error!("Error creating queue entry: {}", e);
+                            })
+                            .ok();
+                    }
                 },
                 "Submit Request"
             }
