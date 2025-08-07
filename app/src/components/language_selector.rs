@@ -1,7 +1,6 @@
 use dioxus::prelude::*;
 use dioxus_i18n::prelude::i18n;
 use dioxus_i18n::unic_langid::langid;
-use table_rs::dioxus::types::TableTexts;
 
 #[component]
 pub fn LanguageSelector() -> Element {
@@ -31,21 +30,3 @@ pub struct LanguageStaticPolish;
 impl LanguageStaticPolish {
     pub const SINGER_NAME_COLUMN: &'static str = "Wykonawca";
 }
-
-pub const TABLE_TEXTS_EN: TableTexts = TableTexts {
-    loading: "Loading...",
-    empty: "No data available",
-    search_placeholder: "Search...",
-    previous_button: "Previous",
-    next_button: "Next",
-    page_indicator: "Page {current} of {total}",
-};
-
-pub const TABLE_TEXTS_PL: TableTexts = TableTexts {
-    loading: "Ładowanie...",
-    empty: "Brak danych",
-    search_placeholder: "Szukaj...",
-    previous_button: "Poprzedni",
-    next_button: "Następny",
-    page_indicator: "Strona {current} z {total}",
-};

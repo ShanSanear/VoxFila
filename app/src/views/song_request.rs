@@ -1,13 +1,24 @@
+use crate::components::SongCard;
+use ::server::{create_queue_entry, songs::get_song};
 use dioxus::prelude::*;
 use dioxus_logger::tracing::{debug, error, info};
-use server::{create_queue_entry, songs::get_song};
 use shared::models::SongDetails;
-
-use crate::components::SongCard;
 
 #[derive(PartialEq, Clone, Props)]
 pub struct SongRequestInputProps {
     id: i32,
+}
+
+#[component]
+pub fn SuccessModal(open: Signal<bool>) -> Element {
+    let mut confirmed = use_signal(|| false);
+    rsx! {
+        if confirmed() {
+            p { style: "color: var(--contrast-error-color); margin-top: 16px; font-weight: 600;",
+                "Item deleted!"
+            }
+        }
+    }
 }
 
 #[component]
@@ -16,6 +27,7 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
     let mut second_singer_name = use_signal(|| String::new());
     let mut second_singer_enabled = use_signal(|| false);
     let mut notes = use_signal(|| String::new());
+    let mut open = use_signal(|| false);
     //TODO translations
     rsx! {
         div { class: "flex flex-col items-center w-full max-w-md",
@@ -84,11 +96,13 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
                                 error!("Error creating queue entry: {}", e);
                             })
                             .ok();
+                        open.set(true);
                     }
                 },
                 "Submit Request"
             }
         }
+        SuccessModal { open }
     }
 }
 
