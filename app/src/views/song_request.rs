@@ -1,4 +1,5 @@
 use crate::components::SongCard;
+use crate::views::Route;
 use ::server::{create_queue_entry, songs::get_song};
 use dioxus::prelude::*;
 use dioxus_logger::tracing::{debug, error, info};
@@ -12,10 +13,26 @@ pub struct SongRequestInputProps {
 #[component]
 pub fn SuccessModal(open: Signal<bool>) -> Element {
     let mut confirmed = use_signal(|| false);
+    if confirmed() {
+        use_effect(|| {
+            info!("Redirecting to song search after successful request.");
+            let nav = navigator();
+            nav.push(Route::SongSearch {});
+        });
+    }
     rsx! {
-        if confirmed() {
-            p { style: "color: var(--contrast-error-color); margin-top: 16px; font-weight: 600;",
-                "Item deleted!"
+        dialog { class: "modal", open: "{open}",
+            div { class: "modal-box",
+                h2 { class: "text-lg font-bold", "Song Request Submitted!" }
+                p { "Your song request has been successfully submitted." }
+                button {
+                    class: "btn btn-primary",
+                    onclick: move |_| {
+                        confirmed.set(true);
+                        open.set(false);
+                    },
+                    "OK"
+                }
             }
         }
     }
@@ -24,8 +41,7 @@ pub fn SuccessModal(open: Signal<bool>) -> Element {
 #[component]
 pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
     let mut singer_name = use_signal(|| String::new());
-    let mut second_singer_name = use_signal(|| String::new());
-    let mut second_singer_enabled = use_signal(|| false);
+    let mut second_singer_name: Signal<Option<String>> = use_signal(|| None);
     let mut notes = use_signal(|| String::new());
     let mut open = use_signal(|| false);
     //TODO translations
@@ -41,31 +57,22 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
                     singer_name.set(e.value());
                 },
             }
-            div { class: "flex items-center mt-2",
-                label { "Add second singer" }
-                input {
-                    r#type: "checkbox",
-                    checked: "{second_singer_enabled}",
-                    class: "checkbox checkbox-primary",
-                    onchange: move |e| {
-                        debug!("Second singer checkbox changed: {}", e.checked());
-                        second_singer_enabled.set(e.checked());
-                    },
-                }
-            
+            input {
+                r#type: "text",
+                class: "input input-bordered w-full max-w-md mt-2",
+                placeholder: "Enter other singer's name (Optional)",
+                value: "{second_singer_name().unwrap_or_default()}",
+                oninput: move |e| {
+                    debug!("Second singer name input changed: {}", e.value());
+                    if e.value().is_empty() {
+                        second_singer_name.set(None);
+                    } else {
+                        second_singer_name.set(Some(e.value()));
+                    }
+                },
             }
-            if second_singer_enabled() {
-                input {
-                    r#type: "text",
-                    class: "input input-bordered w-full max-w-md mt-2",
-                    placeholder: "Enter other singer's name",
-                    value: "{second_singer_name}",
-                    oninput: move |e| {
-                        debug!("Second singer name input changed: {}", e.value());
-                        second_singer_name.set(e.value());
-                    },
-                }
-            }
+
+
             input {
                 r#type: "text",
                 class: "input input-bordered w-full max-w-md mt-2 h-20",
@@ -76,30 +83,34 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
                     notes.set(e.value());
                 },
             }
-            button {
-                class: "btn btn-primary mt-4",
-                onclick: move |_| {
-                    async move {
-                        debug!(
-                            "Submitting song request with singer: {}, second singer: {}, notes: {}",
-                            singer_name(), second_singer_name(), notes()
-                        );
-                        create_queue_entry(
-                                1,
-                                singer_name(),
-                                props.id,
-                                Some(second_singer_name()),
-                                notes(),
-                            )
-                            .await
-                            .map_err(|e| {
-                                error!("Error creating queue entry: {}", e);
-                            })
-                            .ok();
-                        open.set(true);
-                    }
-                },
-                "Submit Request"
+            div { class: "mt-2 flex items-center justify-between w-full",
+                button {
+                    class: "btn btn-primary mx-4",
+                    onclick: move |_| {
+                        async move {
+                            debug!(
+                                "Submitting song request with singer: {}, second singer: {}, notes: {}",
+                                singer_name(), second_singer_name().unwrap_or_default(), notes()
+                            );
+                            create_queue_entry(1, singer_name(), props.id, second_singer_name(), notes())
+                                .await
+                                .map_err(|e| {
+                                    error!("Error creating queue entry: {}", e);
+                                })
+                                .ok();
+                            open.set(true);
+                        }
+                    },
+                    "Submit Request"
+                }
+                button {
+                    class: "btn btn-secondary mx-4",
+                    onclick: move |_| {
+                        let nav = navigator();
+                        nav.push(Route::SongSearch {});
+                    },
+                    "Back to Search"
+                }
             }
         }
         SuccessModal { open }
