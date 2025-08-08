@@ -2,7 +2,7 @@ use ::server::songs::{list_songs_dummy, search_songs};
 use dioxus::prelude::*;
 use dioxus_logger::tracing::{debug, info};
 
-use crate::components::SongCard;
+use crate::components::{SongCard, UserNewSongRequest};
 
 use crate::views::Route;
 
@@ -12,11 +12,11 @@ pub fn SongSearch() -> Element {
     let songs = use_resource(move || async move {
         if current_search().len() > 3 {
             search_songs(current_search().clone()).await
-            // list_songs_dummy().await
         } else {
             Ok(vec![])
         }
     });
+    let mut open_new_song_request = use_signal(|| false);
     rsx! {
         div { class: "flex container mx-auto px-4 py-6 flex items-center justify-center flex-col",
             input {
@@ -51,10 +51,10 @@ pub fn SongSearch() -> Element {
                                     class: "btn btn-primary mt-2",
                                     onclick: move |_| {
                                         debug!("Requesting adding song");
+                                        open_new_song_request.set(true);
                                     },
-                                    disabled: true,
                                     "Request adding song"
-                                } // TODO add modal
+                                }
                             }
                         }
                     }
@@ -70,6 +70,7 @@ pub fn SongSearch() -> Element {
                     }
                 }
             }
+            UserNewSongRequest { open: open_new_song_request }
         }
     }
 }
