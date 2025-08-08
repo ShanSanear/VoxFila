@@ -6,6 +6,8 @@ MUST - very important requirement for things to be usable
 SHOULD - important, but not very important
 MAY - nice to have, but possible to overcome by other features or usability is limited due to low frequency of usage
 
+~~Strukthrough entries~~ are implemented
+
 ## Operator-side
 
 Operator MUST be required to login to access its functionality.
@@ -30,13 +32,13 @@ Operator SHOULD have a way to specify how many people are being shown in queue s
 
 ## User-side
 
-User MUST be able to easily select song they want to sing
+~~User MUST be able to easily select song they want to sing~~
 
-User MUST be able to specify name of the second person
+~~User MUST be able to specify name of the second person~~
 
-User MUST be able to specify some notes about their request, so the operator could see them (change in pitch, back melody etc.)
+~~User MUST be able to specify some notes about their request, so the operator could see them (change in pitch, back melody etc.)~~
 
-User SHOULD be able to specify their own songs, in case it is not available in local database (which database then saves for future use)
+~~User SHOULD be able to specify their own songs, in case it is not available in local database (which database then saves for future use)~~
 
 User SHOULD be able to check behavior of the app in clear and concise language, to reduce any kind of confusion
 
@@ -61,6 +63,10 @@ Docker compose file MAY have additional nginx component
 ## General info
 
 App MUST handle starting and ending session - when ending session it should clear queue from entries that were unused
+
+App MUST be bi-lingual - i.e. interface should be available in Polish and English
+
+App SHOULD both detect default language and save language selection if user did it
 
 App MAY show operator QR code to show to users
 
