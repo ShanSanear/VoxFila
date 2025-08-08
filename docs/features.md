@@ -36,9 +36,11 @@ User MUST be able to specify name of the second person
 
 User MUST be able to specify some notes about their request, so the operator could see them (change in pitch, back melody etc.)
 
-User SHOULD be able to specify their own songs, in case it is not available in local database
+User SHOULD be able to specify their own songs, in case it is not available in local database (which database then saves for future use)
 
 User SHOULD be able to check behavior of the app in clear and concise language, to reduce any kind of confusion
+
+User SHOULD be able to add multiple songs at once
 
 User MAY be able to submit their feedback as a simple form for creator of the app to then review
 
@@ -50,8 +52,18 @@ Admin SHOULD be able to do the same things as operator
 
 Admin MUST be able to review feedback for the app
 
+## Deployment
+
+App MUST have appropriate Dockerfile and docker-compose that makes it possible to deploy
+
+Docker compose file MAY have additional nginx component
+
 ## General info
 
 App MUST handle starting and ending session - when ending session it should clear queue from entries that were unused
 
+App MAY show operator QR code to show to users
+
 App MAY show links to other webpages to let users and operators known about author and websites/programs they work with
+
+App MAY require some code to access the UI to prevent outside ingerention - such as `?key=X` parameter in URL that would be provided
