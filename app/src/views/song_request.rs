@@ -96,8 +96,9 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
     let mut singer_name = use_signal(|| String::new());
     let mut second_singer_name: Signal<Option<String>> = use_signal(|| None);
     let mut notes = use_signal(|| String::new());
-    let mut open = use_signal(|| false);
+    let mut open_success = use_signal(|| false);
     let mut error_open = use_signal(|| false);
+    let mut error_message = use_signal(|| String::new());
     //TODO translations
     rsx! {
         div { class: "flex flex-col items-center w-full max-w-md",
@@ -150,7 +151,7 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
                                 error!("Invalid inputs provided for song request.");
                                 error_open.set(true);
                             } else {
-                                create_queue_entry(
+                                match create_queue_entry(
                                         1,
                                         singer_name(),
                                         props.id,
@@ -158,11 +159,17 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
                                         notes(),
                                     )
                                     .await
-                                    .map_err(|e| {
-                                        error!("Error creating queue entry: {}", e);
-                                    })
-                                    .ok();
-                                open.set(true);
+                                {
+                                    Ok(_) => {
+                                        debug!("Song request created successfully.");
+                                        open_success.set(true);
+                                    }
+                                    Err(e) => {
+                                        error!("Error creating queue entry: {e}");
+                                        error_message.set(format!("Error creating queue entry: {e}"));
+                                        error_open.set(true);
+                                    }
+                                }
                             }
                         }
                     },
@@ -178,11 +185,8 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
                 }
             }
         }
-        SuccessModal { open }
-        InputErrorModal {
-            open: error_open,
-            message: "Please fill in all fields correctly.".to_string(),
-        }
+        SuccessModal { open: open_success }
+        InputErrorModal { open: error_open, message: error_message() }
     }
 }
 
