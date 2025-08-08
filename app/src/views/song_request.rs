@@ -5,6 +5,8 @@ use dioxus::prelude::*;
 use dioxus_logger::tracing::{debug, error, info};
 use shared::models::SongDetails;
 
+use crate::components::SESSION_ID;
+
 #[derive(PartialEq, Clone, Props)]
 pub struct SongRequestInputProps {
     id: i32,
@@ -152,7 +154,7 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
                                 error_open.set(true);
                             } else {
                                 match create_queue_entry(
-                                        1,
+                                        SESSION_ID(),
                                         singer_name(),
                                         props.id,
                                         second_singer_name(),
