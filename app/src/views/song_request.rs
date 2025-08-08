@@ -10,6 +10,42 @@ pub struct SongRequestInputProps {
     id: i32,
 }
 
+fn input_has_valid_characters(input_string: &str) -> bool {
+    input_string
+        .chars()
+        .all(|c| c.is_alphanumeric() || c.is_ascii_punctuation() || c.is_whitespace())
+}
+
+fn validate_inputs(singer_name: &str, second_singer_name: &Option<String>, notes: &str) -> bool {
+    if singer_name.is_empty() {
+        error!("Singer name cannot be empty.");
+        return false;
+    }
+    if !input_has_valid_characters(singer_name) {
+        error!("Singer name is invalid: {}", singer_name);
+        return false;
+    }
+    match second_singer_name {
+        Some(name) if !name.is_empty() => {
+            if !input_has_valid_characters(name) {
+                error!("Second singer name is invalid: {}", name);
+                return false;
+            }
+        }
+        _ => {}
+    }
+
+    if !input_has_valid_characters(notes) {
+        error!(
+            "Notes must contain only alphanumeric characters. Notes: {}",
+            notes
+        );
+        return false;
+    }
+
+    true
+}
+
 #[component]
 pub fn SuccessModal(open: Signal<bool>) -> Element {
     let mut confirmed = use_signal(|| false);
@@ -39,11 +75,29 @@ pub fn SuccessModal(open: Signal<bool>) -> Element {
 }
 
 #[component]
+pub fn InputErrorModal(open: Signal<bool>, message: String) -> Element {
+    rsx! {
+        dialog { class: "modal", open: "{open}",
+            div { class: "modal-box",
+                h2 { class: "text-lg font-bold text-red-500", "Error" }
+                p { class: "text-red-500", "{message}" }
+                button {
+                    class: "btn btn-primary",
+                    onclick: move |_| open.set(false),
+                    "Close"
+                }
+            }
+        }
+    }
+}
+
+#[component]
 pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
     let mut singer_name = use_signal(|| String::new());
     let mut second_singer_name: Signal<Option<String>> = use_signal(|| None);
     let mut notes = use_signal(|| String::new());
     let mut open = use_signal(|| false);
+    let mut error_open = use_signal(|| false);
     //TODO translations
     rsx! {
         div { class: "flex flex-col items-center w-full max-w-md",
@@ -92,13 +146,24 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
                                 "Submitting song request with singer: {}, second singer: {}, notes: {}",
                                 singer_name(), second_singer_name().unwrap_or_default(), notes()
                             );
-                            create_queue_entry(1, singer_name(), props.id, second_singer_name(), notes())
-                                .await
-                                .map_err(|e| {
-                                    error!("Error creating queue entry: {}", e);
-                                })
-                                .ok();
-                            open.set(true);
+                            if !validate_inputs(&singer_name(), &second_singer_name(), &notes()) {
+                                error!("Invalid inputs provided for song request.");
+                                error_open.set(true);
+                            } else {
+                                create_queue_entry(
+                                        1,
+                                        singer_name(),
+                                        props.id,
+                                        second_singer_name(),
+                                        notes(),
+                                    )
+                                    .await
+                                    .map_err(|e| {
+                                        error!("Error creating queue entry: {}", e);
+                                    })
+                                    .ok();
+                                open.set(true);
+                            }
                         }
                     },
                     "Submit Request"
@@ -114,6 +179,10 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
             }
         }
         SuccessModal { open }
+        InputErrorModal {
+            open: error_open,
+            message: "Please fill in all fields correctly.".to_string(),
+        }
     }
 }
 
