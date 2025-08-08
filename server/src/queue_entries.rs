@@ -3,7 +3,7 @@ use log::{debug, info};
 
 use shared::models::{session, NewSong, QueueEntryDetails, SingerDetails, SongDetails};
 
-use crate::singers::get_singer;
+use crate::singers::get_or_create_singer;
 
 #[cfg(feature = "db")]
 use crate::database::get_db;
@@ -17,10 +17,10 @@ pub async fn create_queue_entry(
     notes: String,
 ) -> Result<i32, ServerFnError> {
     let db = get_db().await;
-    let singer = get_singer(singer_name).await?;
+    let singer = get_or_create_singer(singer_name).await?;
 
     let second_singer = if let Some(second_singer_name) = second_singer_name {
-        Some(get_singer(second_singer_name).await?)
+        Some(get_or_create_singer(second_singer_name).await?)
     } else {
         None
     };

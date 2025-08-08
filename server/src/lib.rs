@@ -8,4 +8,4 @@ pub mod queue_entries;
 pub use queue_entries::{create_queue_entry, get_queue_entry};
 
 pub mod singers;
-pub use singers::{get_singer, list_singers};
+pub use singers::{get_or_create_singer, get_singer, list_singers};

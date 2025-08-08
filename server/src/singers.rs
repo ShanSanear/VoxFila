@@ -57,6 +57,26 @@ pub async fn get_singer(singer_name: String) -> Result<SingerDetails, ServerFnEr
 }
 
 #[server]
+pub async fn get_or_create_singer(singer_name: String) -> Result<SingerDetails, ServerFnError> {
+    info!("Getting or creating singer with name: {}", singer_name);
+    let db = get_db().await;
+
+    match get_singer(singer_name.clone()).await {
+        Ok(singer) => {
+            info!("Singer found: {:?}", singer);
+            Ok(singer)
+        }
+        Err(_) => {
+            info!(
+                "Singer not found, creating new one with name: {}",
+                singer_name
+            );
+            save_singer(NewSinger { name: singer_name }).await
+        }
+    }
+}
+
+#[server]
 pub async fn save_singer(singer: NewSinger) -> Result<SingerDetails, ServerFnError> {
     info!("Saving new singer: {:?}", singer);
     let db = get_db().await;
