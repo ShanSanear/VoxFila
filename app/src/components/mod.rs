@@ -15,3 +15,6 @@ pub use queue_entry_card::QueueEntryCard;
 
 mod singers_card;
 pub use singers_card::SingersCard;
+
+mod session_card;
+pub use session_card::SessionCard;

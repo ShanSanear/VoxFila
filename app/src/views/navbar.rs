@@ -14,6 +14,9 @@ pub fn Navbar() -> Element {
             div { class: "navbar-center", // DaisyUI navbar-center for center alignment
                 Link { class: "btn btn-ghost", to: Route::SongQueue {}, "Song Queue" }
             }
+            div { class: "navbar-center", // DaisyUI navbar-end for right alignment
+                Link { class: "btn btn-ghost", to: Route::SessionManagement {}, "Session Management" }
+            }
 
             // Optional: right side for future elements like account/settings
             div { class: "navbar-end", LanguageSelector {} }

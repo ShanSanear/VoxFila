@@ -9,3 +9,6 @@ pub use queue_entries::{create_queue_entry, get_queue_entry, list_queue_entries}
 
 pub mod singers;
 pub use singers::{get_or_create_singer, get_singer, list_singers};
+
+pub mod sessions;
+pub use sessions::{get_active_session, list_sessions};

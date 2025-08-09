@@ -12,3 +12,6 @@ pub use song_request::SongRequest;
 
 mod song_queue;
 pub use song_queue::SongQueue;
+
+mod session_management;
+pub use session_management::SessionManagement;

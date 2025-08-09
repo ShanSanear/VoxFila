@@ -1,7 +1,7 @@
 use dioxus::prelude::*;
 use log::{debug, info};
 
-use shared::models::{session, NewSong, QueueEntryDetails, SingerDetails, SongDetails};
+use shared::models::{session, NewSong, QueueEntryDetails, QueueEntryStatus, SingerDetails};
 
 use crate::singers::get_or_create_singer;
 
