@@ -18,7 +18,9 @@ flowchart TD
     LoadingSpinner --> ResultsFromBackend[Show results]
 
     ResultsFromBackend -->|No Results| NoResults[Show 'No results found' message]
-    NoResults --> Searching
+    NoResults --> ShowRequestSongButton[Show button requesting new song]
+    ShowRequestSongButton --> |User clicks the button| SubmittingSong[New song submission form start]
+    ShowRequestSongButton --> |User doesn't click the button| Searching
     ResultsFromBackend -->|Failure| ErrorMsg[Show error message]
     ResultsFromBackend --> |Success| SearchingMore{User changes input?}
        
@@ -30,8 +32,18 @@ flowchart TD
     SubmissionForm --> Submit([Show submission form])
     Submit --> EndSelect
   end
+  subgraph User submits new song
+    StartSubmittingSong[Start submitting song] --> ShowElements[Show input for song title, artist and urls]
+    ShowElements --> SubmitNewSong[User clicks submit song]
+    SubmitNewSong --> ValidateSongInput{Input validation}
+    ValidateSongInput --> |All inputs are valid| ValidationSuccessfull([Show popup informing about submission being successful])
+    ValidateSongInput --> WhatToDo{Choose what to do}
+    ValidaSongInput --> |One or more inputs are invalid| ValidationError([Show popup informing about values being incorrect an requiring change])
+    WhatToDo --> |Go back to song search| StartSearching[Start searching again]
+    WhatToDo --> |Go directly to submission form request| SubmissionFormRequest[Go right away to request song that was just created]
+  end
   subgraph "Submission form"
-    EditSongButton([User clicks on close]) --> SelectSongRedirect[Go back to song selection]
+    BackToSearchButton([User clicks on back to search]) --> SelectSongRedirect[Go back to song selection]
 
     SubmitButton([User clicks 'submit' button]) --> PrimarySingerValid{Is primary singer input valid and not empty?}
     PrimarySingerValid --> |Yes| SecondaryEnabled{Is secondary singer toggle enabled?}
