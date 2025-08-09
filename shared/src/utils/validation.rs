@@ -4,6 +4,7 @@ pub fn input_has_valid_characters(input_string: &str) -> bool {
     input_string
         .chars()
         .all(|c| c.is_alphanumeric() || c.is_ascii_punctuation() || c.is_whitespace())
+        && !input_string.is_empty()
 }
 
 pub fn validate_inputs(

@@ -2,12 +2,29 @@ use serde::{Deserialize, Serialize};
 
 use chrono::{DateTime, NaiveDateTime, Utc};
 
+use crate::utils::validation::input_has_valid_characters;
+
 #[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct NewSong {
     pub artist: String,
     pub title: String,
     pub yturl: Option<String>,
     pub isingurl: Option<String>,
+}
+
+impl NewSong {
+    pub fn validate(&self) -> bool {
+        input_has_valid_characters(&self.artist)
+            && input_has_valid_characters(&self.title)
+            && self
+                .yturl
+                .as_ref()
+                .is_none_or(|url| input_has_valid_characters(url))
+            && self
+                .isingurl
+                .as_ref()
+                .is_none_or(|url| input_has_valid_characters(url))
+    }
 }
 
 #[derive(Deserialize, Serialize, PartialEq, Clone, Debug, sqlx::FromRow)]

@@ -5,7 +5,7 @@ use dioxus::prelude::*;
 use dioxus_logger::tracing::{debug, error, info};
 use shared::models::SongDetails;
 
-use crate::utils::validation::{input_has_valid_characters, validate_inputs};
+use shared::utils::validation::{input_has_valid_characters, validate_inputs};
 
 use crate::components::SESSION_ID;
 
