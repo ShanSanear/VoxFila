@@ -9,3 +9,6 @@ pub use song_search::SongSearch;
 
 mod song_request;
 pub use song_request::SongRequest;
+
+mod song_queue;
+pub use song_queue::SongQueue;

@@ -1,0 +1,47 @@
+use crate::components::{QueueEntryCard, SingersCard};
+use crate::views::Route;
+use ::server::{create_queue_entry, list_queue_entries, songs::get_song};
+use dioxus::prelude::*;
+use dioxus_logger::tracing::{debug, error, info};
+use shared::models::{QueueEntryDetails, SingerDetails, SongDetails};
+
+use crate::components::SESSION_ID;
+
+#[component]
+pub fn SongQueue() -> Element {
+    let queue_entries = use_resource(move || async move { list_queue_entries(SESSION_ID()).await });
+    rsx! {
+        div { class: "flex container mx-auto px-4 py-6 flex items-center justify-center flex-col",
+            h1 { class: "text-2xl font-bold", "Song Queue" }
+            // Here you would typically fetch and display the song queue
+            // For now, we will just show a placeholder
+            match &*queue_entries.read() {
+                Some(Ok(entries)) => {
+                    rsx! {
+                        
+                        for queue_entry in entries.iter() {
+                            div { class: "flex container flex-row w-full max-w-md bg-base-100 shadow-xl my-2",
+                                QueueEntryCard { queue_entry_details: queue_entry.clone() }
+                            }
+                        }
+                        
+                        if entries.is_empty() {
+                            div { class: "mt-4 text-lg", "No queue entries found." }
+                        }
+                    }
+                }
+                Some(Err(e)) => {
+                    debug!("Error fetching queue entries: {}", e);
+                    rsx! {
+                        div { class: "text-red-500", "Error fetching queue entries." }
+                    }
+                }
+                None => {
+                    rsx! {
+                        div { class: "mt-4 text-lg", "Loading queue entries..." }
+                    }
+                }
+            }
+        }
+    }
+}

@@ -1,4 +1,4 @@
-use crate::views::{Navbar, SongRequest, SongSearch};
+use crate::views::{Navbar, SongQueue, SongRequest, SongSearch};
 use dioxus::prelude::*;
 use shared::models::SongDetails;
 /// The Route enum is used to define the structure of internal routes in our app. All route enums need to derive
@@ -13,5 +13,7 @@ pub enum Route {
         #[route("/")]
         SongSearch {},
         #[route("/song-request/:id")]
-        SongRequest { id: i32 }
+        SongRequest { id: i32 },
+        #[route("/queue")]
+        SongQueue {}
 }

@@ -67,8 +67,8 @@ pub async fn get_queue_entry(
 qe.session_id,
 s.singer_id,
 s.name,
-ss.singer_id as secondary_singer_id,
-ss.name as secondary_singer_name,
+ss.singer_id as second_singer_id,
+ss.name as second_singer_name,
 son.song_id,
 son.artist,
 son.title,
@@ -91,5 +91,43 @@ WHERE qe.session_id=$1 AND qe.queue_entry_id=$2;"#,
     .await?;
 
     debug!("Returning song details for queue entry {}", queue_entry_id);
+    Ok(result)
+}
+
+#[server]
+pub async fn list_queue_entries(session_id: i32) -> Result<Vec<QueueEntryDetails>, ServerFnError> {
+    let db = get_db().await;
+    let result: Vec<QueueEntryDetails> = sqlx::query_as(
+        r#"SELECT qe.queue_entry_id,
+qe.session_id,
+s.singer_id,
+s.name,
+ss.singer_id as second_singer_id,
+ss.name as second_singer_name,
+son.song_id,
+son.artist,
+son.title,
+son.yturl,
+son.isingurl,
+qe.status,
+qe.queue_position,
+qe.original_position,
+qe.notes,
+qe.moved_at
+FROM queue_entries qe
+JOIN singers s on qe.singer_id = s.singer_id
+JOIN singers ss on qe.second_singer_id = ss.singer_id
+JOIN songs son on qe.song_id = son.song_id
+WHERE qe.session_id=$1;"#,
+    )
+    .bind(session_id)
+    .fetch_all(db)
+    .await?;
+
+    debug!(
+        "Returning {} queue entries for session {}",
+        result.len(),
+        session_id
+    );
     Ok(result)
 }
