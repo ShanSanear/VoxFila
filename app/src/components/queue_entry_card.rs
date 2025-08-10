@@ -12,13 +12,17 @@ pub struct QueueEntryCardProps {
 #[component]
 pub fn QueueEntryCard(props: QueueEntryCardProps) -> Element {
     rsx!(
-        div { class: "card flex container flex-row w-full max-w-md bg-base-100 shadow-xl my-2",
-            SongCard { song: props.queue_entry_details.song.clone() }
-            SingersCard {
-                singer: props.queue_entry_details.singer.clone(),
-                second_singer: props.queue_entry_details.second_singer.clone(),
+        div { class: "flex-1",
+            div { class: "card-body p-0",
+                SongCard { song: props.queue_entry_details.song.clone() }
+                div { class: "flex gap-2 items-center",
+                    SingersCard {
+                        singer: props.queue_entry_details.singer.clone(),
+                        second_singer: props.queue_entry_details.second_singer.clone(),
+                    }
+                    SongLinksCard { song: props.queue_entry_details.song.clone() }
+                }
             }
-            SongLinksCard { song: props.queue_entry_details.song.clone() }
         }
     )
 }

@@ -4,22 +4,31 @@ use dioxus_i18n::unic_langid::langid;
 use shared::models::{SecondSingerDetails, SingerDetails};
 
 #[derive(PartialEq, Clone, Props)]
-pub struct SongCardProps {
+pub struct SingerCardProps {
     singer: SingerDetails,
     second_singer: Option<SecondSingerDetails>,
 }
 
 #[component]
-pub fn SingersCard(props: SongCardProps) -> Element {
+pub fn SingersCard(props: SingerCardProps) -> Element {
     rsx!(
-        div { class: "card-body",
-            h2 { class: "card-title", "{props.singer.name}" }
-
-            if let Some(second_singer) = &props.second_singer {
-                h3 { class: "card-title",
-                    "{second_singer.second_singer_name.as_ref().unwrap_or(&String::new())}"
+        span { class: "badge badge-info", "{props.singer.name}" }
+        match &props.second_singer {
+            Some(second_singer) => {
+                match &second_singer.second_singer_name {
+                    Some(second_singer_name) => {
+                        if !second_singer_name.is_empty() {
+                            rsx! {
+                                span { class: "badge badge-info", "{second_singer_name}" }
+                            }
+                        } else {
+                            rsx! {}
+                        }
+                    }
+                    None => rsx! {},
                 }
             }
+            &None => rsx! {},
         }
     )
 }
