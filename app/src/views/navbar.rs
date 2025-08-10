@@ -18,6 +18,13 @@ pub fn Navbar() -> Element {
                 Link { class: "btn btn-ghost", to: Route::SessionManagement {}, "Session Management" }
             }
 
+            div { class: "navbar-center",
+                Link { class: "btn btn-ghost", to: Route::TestComponent {},
+                    {}
+                    "Test"
+                }
+            }
+
             // Optional: right side for future elements like account/settings
             div { class: "navbar-end", LanguageSelector {} }
         }

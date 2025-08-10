@@ -15,3 +15,6 @@ pub use song_queue::SongQueue;
 
 mod session_management;
 pub use session_management::SessionManagement;
+
+mod test;
+pub use test::TestComponent;
