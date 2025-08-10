@@ -57,10 +57,7 @@ pub async fn create_queue_entry(
 }
 
 #[server]
-pub async fn get_queue_entry(
-    session_id: i32,
-    queue_entry_id: i32,
-) -> Result<QueueEntryDetails, ServerFnError> {
+pub async fn get_queue_entry(queue_entry_id: i32) -> Result<QueueEntryDetails, ServerFnError> {
     let db = get_db().await;
     let result: QueueEntryDetails = sqlx::query_as(
         r#"SELECT qe.queue_entry_id,
@@ -83,9 +80,8 @@ FROM queue_entries qe
 JOIN singers s on qe.singer_id = s.singer_id
 JOIN singers ss on qe.second_singer_id = ss.singer_id
 JOIN songs son on qe.song_id = son.song_id
-WHERE qe.session_id=$1 AND qe.queue_entry_id=$2;"#,
+WHERE qe.queue_entry_id=$1;"#,
     )
-    .bind(session_id)
     .bind(queue_entry_id)
     .fetch_one(db)
     .await?;
@@ -130,4 +126,76 @@ WHERE qe.session_id=$1;"#,
         session_id
     );
     Ok(result)
+}
+
+#[server]
+pub async fn list_pending_queue_entries(
+    session_id: i32,
+) -> Result<Vec<QueueEntryDetails>, ServerFnError> {
+    let db = get_db().await;
+    let result: Vec<QueueEntryDetails> = sqlx::query_as(
+        r#"SELECT qe.queue_entry_id,
+qe.session_id,
+s.singer_id,
+s.name,
+ss.singer_id as second_singer_id,
+ss.name as second_singer_name,
+son.song_id,
+son.artist,
+son.title,
+son.yturl,
+son.isingurl,
+qe.status,
+qe.queue_position,
+qe.original_position,
+qe.notes,
+qe.moved_at
+FROM queue_entries qe
+JOIN singers s on qe.singer_id = s.singer_id
+LEFT JOIN singers ss on qe.second_singer_id = ss.singer_id
+JOIN songs son on qe.song_id = son.song_id
+WHERE qe.session_id=$1 AND qe.status='pending'
+ORDER BY qe.queue_position;"#,
+    )
+    .bind(session_id)
+    .fetch_all(db)
+    .await?;
+
+    debug!(
+        "Returning {} queue entries for session {}",
+        result.len(),
+        session_id
+    );
+    Ok(result)
+}
+
+#[server]
+pub async fn remove_queue_entry(queue_entry_id: i32) -> Result<(), ServerFnError> {
+    let db = get_db().await;
+    sqlx::query("DELETE FROM queue_entries WHERE queue_entry_id=$1")
+        .bind(queue_entry_id)
+        .execute(db)
+        .await?;
+    Ok(())
+}
+
+#[server]
+pub async fn complete_queue_entry<'a>(queue_entry_id: i32) -> Result<(), ServerFnError> {
+    let db = get_db().await;
+    sqlx::query("UPDATE queue_entries SET status='completed' WHERE queue_entry_id=$1")
+        .bind(queue_entry_id)
+        .execute(db)
+        .await?;
+    Ok(())
+}
+
+#[server]
+pub async fn move_queue_entry(queue_entry_id: i32, new_position: i32) -> Result<(), ServerFnError> {
+    let db = get_db().await;
+    sqlx::query("UPDATE queue_entries SET queue_position=$1 WHERE queue_entry_id=$2")
+        .bind(new_position)
+        .bind(queue_entry_id)
+        .execute(db)
+        .await?;
+    Ok(())
 }

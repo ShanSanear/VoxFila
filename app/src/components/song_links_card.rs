@@ -17,13 +17,13 @@ pub fn SongLinksCard(props: SongLinksCardProps) -> Element {
             match &props.song.yturl {
                 Some(yturl) => {
                     rsx! {
-                        a { class: "link link-primary", href: "{yturl}", "YT [L]" }
+                        a { class: "btn btn-accent link link-primary max-w-md", href: "{yturl}", "YT [L]" }
                     }
                 }
                 None => {
                     rsx! {
                         a {
-                            class: "link link-secondary",
+                            class: "btn btn-accent link link-secondary",
                             href: get_yt_search_link_for_song(&props.song.artist, &props.song.title),
                             "YT [S]"
                         }
@@ -33,7 +33,7 @@ pub fn SongLinksCard(props: SongLinksCardProps) -> Element {
             match &props.song.isingurl {
                 Some(isingurl) => {
                     rsx! {
-                        a { class: "link link-primary", href: "{isingurl}", "YT [L]" }
+                        a { class: "btn btn-accent link link-primary", href: "{isingurl}", "iSing [L]" }
                     }
                 }
                 None => {

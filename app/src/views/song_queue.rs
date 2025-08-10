@@ -1,6 +1,9 @@
 use crate::components::{QueueEntryCard, SingersCard};
 use crate::views::Route;
-use ::server::{create_queue_entry, list_queue_entries, songs::get_song};
+use ::server::{
+    complete_queue_entry, create_queue_entry, list_pending_queue_entries, list_queue_entries,
+    remove_queue_entry, songs::get_song,
+};
 use dioxus::prelude::*;
 use dioxus_logger::tracing::{debug, error, info};
 use shared::models::{QueueEntryDetails, SingerDetails, SongDetails};
@@ -9,7 +12,7 @@ use crate::components::SESSION_ID;
 
 #[component]
 pub fn SongQueue() -> Element {
-    let queue_entries = use_resource(move || async move { list_queue_entries(SESSION_ID()).await });
+    let queue_entries = use_resource(|| async { list_pending_queue_entries(SESSION_ID()).await });
     rsx! {
         div { class: "flex container mx-auto px-4 py-6 flex items-center justify-center flex-col",
             h1 { class: "text-2xl font-bold", "Song Queue" }
