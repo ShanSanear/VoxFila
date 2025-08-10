@@ -1,5 +1,5 @@
 use dioxus::prelude::*;
-use log::info;
+use dioxus_logger::tracing::{debug, error, info};
 
 use sqlx::PgPool;
 use sqlx::SqlitePool;
@@ -12,6 +12,7 @@ static DB: OnceCell<PgPool> = OnceCell::const_new();
 async fn init_db() -> PgPool {
     let db_url = env::var("DATABASE_URL")
         .unwrap_or_else(|_| "postgres://postgres:postgres@localhost:4222/postgres".to_string());
+    debug!("Connecting to database at {}", db_url);
     PgPool::connect(&db_url)
         .await
         .expect("Failed to connect to database")

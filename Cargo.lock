@@ -2767,6 +2767,7 @@ dependencies = [
  "chrono",
  "dioxus",
  "dioxus-hooks",
+ "dioxus-logger",
  "env_logger",
  "log",
  "serde_json",
