@@ -13,8 +13,8 @@ use dioxus_i18n::{
     unic_langid::langid,
 };
 
-const FAVICON: Asset = asset!("/assets/favicon.ico");
-const TAILWIND_CSS: Asset = asset!("/assets/tailwind.css");
+const FAVICON: Asset = asset!("assets/favicon.ico");
+const TAILWIND_CSS: Asset = asset!("assets/tailwind.css");
 
 fn main() {
     logger::init(tracing::Level::DEBUG).expect("failed to init logger");
