@@ -30,7 +30,7 @@ pub fn validate_inputs(
         _ => {}
     }
 
-    if !input_has_valid_characters(notes) {
+    if !notes.is_empty() && !input_has_valid_characters(notes) {
         error!(
             "Notes must contain only alphanumeric characters. Notes: {}",
             notes

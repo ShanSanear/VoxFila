@@ -1,4 +1,4 @@
-use crate::components::{SingersCard, SongCard};
+use crate::components::{SingersCard, SongCard, SongLinksCard};
 use dioxus::prelude::*;
 use dioxus_i18n::prelude::i18n;
 use dioxus_i18n::unic_langid::langid;
@@ -18,6 +18,7 @@ pub fn QueueEntryCard(props: QueueEntryCardProps) -> Element {
                 singer: props.queue_entry_details.singer.clone(),
                 second_singer: props.queue_entry_details.second_singer.clone(),
             }
+            SongLinksCard { song: props.queue_entry_details.song.clone() }
         }
     )
 }

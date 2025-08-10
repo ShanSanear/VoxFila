@@ -16,7 +16,9 @@ pub fn SingersCard(props: SongCardProps) -> Element {
             h2 { class: "card-title", "{props.singer.name}" }
 
             if let Some(second_singer) = &props.second_singer {
-                h3 { class: "card-title", "{second_singer.second_singer_name}" }
+                h3 { class: "card-title",
+                    "{second_singer.second_singer_name.as_ref().unwrap_or(&String::new())}"
+                }
             }
         }
     )

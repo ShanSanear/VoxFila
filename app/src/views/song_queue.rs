@@ -18,13 +18,16 @@ pub fn SongQueue() -> Element {
             match &*queue_entries.read() {
                 Some(Ok(entries)) => {
                     rsx! {
-                        
-                        for queue_entry in entries.iter() {
+                        for (index , queue_entry) in entries.iter().enumerate() {
                             div { class: "flex container flex-row w-full max-w-md bg-base-100 shadow-xl my-2",
+                                p { "{index + 1}. " }
                                 QueueEntryCard { queue_entry_details: queue_entry.clone() }
+                                if index == 0 {
+                                    button { class: "btn btn-primary", "Played" }
+                                    button { class: "btn btn-secondary", "" }
+                                }
                             }
                         }
-                        
                         if entries.is_empty() {
                             div { class: "mt-4 text-lg", "No queue entries found." }
                         }

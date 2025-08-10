@@ -18,3 +18,6 @@ pub use singers_card::SingersCard;
 
 mod session_card;
 pub use session_card::SessionCard;
+
+mod song_links_card;
+pub use song_links_card::SongLinksCard;

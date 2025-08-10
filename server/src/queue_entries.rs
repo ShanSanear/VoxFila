@@ -116,7 +116,7 @@ qe.notes,
 qe.moved_at
 FROM queue_entries qe
 JOIN singers s on qe.singer_id = s.singer_id
-JOIN singers ss on qe.second_singer_id = ss.singer_id
+LEFT JOIN singers ss on qe.second_singer_id = ss.singer_id
 JOIN songs son on qe.song_id = son.song_id
 WHERE qe.session_id=$1;"#,
     )

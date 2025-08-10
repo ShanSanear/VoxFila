@@ -17,8 +17,8 @@ pub struct SingerDetails {
 pub struct SecondSingerDetails {
     /// This struct is a workaround for dealing with how sqlx handles `flatten` type of conversion
     /// from sql row into a struct
-    pub second_singer_id: i32,
-    pub second_singer_name: String,
+    pub second_singer_id: Option<i32>,
+    pub second_singer_name: Option<String>,
 }
 
 #[derive(Deserialize, Serialize, PartialEq, Clone, Debug, sqlx::FromRow)]
