@@ -1946,6 +1946,10 @@
   --badge-color: var(--color-success);
   --badge-fg: var(--color-success-content);
 }
+.btn-accent {
+  --btn-color: var(--color-accent);
+  --btn-fg: var(--color-accent-content);
+}
 .btn-error {
   --btn-color: var(--color-error);
   --btn-fg: var(--color-error-content);
