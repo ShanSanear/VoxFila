@@ -1,0 +1,12 @@
+**/target
+**/dist
+**/node_modules
+.vscode
+.git
+docs
+pgadmin
+.env
+LICENSES
+LICENSE
+temp
+README.md
