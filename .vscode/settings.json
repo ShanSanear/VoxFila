@@ -13,5 +13,6 @@
             "name": "Voxfila",
             "database": "voxfila.db"
         }
-    ]
+    ],
+    "rust-analyzer.trace.server": "verbose"
 }

@@ -1,0 +1,24 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Debug",
+            "type": "rust",
+            "request": "launch",
+            "program": "dx",
+            "args": [
+                "serve",
+                "--platform",
+                "web"
+            ],
+            "env": {
+                "RUST_LOG": "debug",
+                "DATABASE_URL": "postgres://postgres:postgres@localhost:4222/postgres"
+            },
+            "cwd": "${workspaceFolder}/app"
+        }
+    ]
+}
