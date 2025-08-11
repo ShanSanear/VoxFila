@@ -1,0 +1,25 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO queue_entries (session_id, singer_id, song_id, notes)\n                 VALUES ($1, $2, $3, $4)\n                 RETURNING queue_entry_id",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "queue_entry_id",
+        "type_info": "Int4"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Int4",
+        "Int4",
+        "Int4",
+        "Text"
+      ]
+    },
+    "nullable": [
+      false
+    ]
+  },
+  "hash": "ec75546d7a67830b32c8556455dd9132ebd4130896697a88f80fb35d4cd6acda"
+}

@@ -1,0 +1,29 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "UPDATE singers SET name = $1 WHERE singer_id = $2\n    RETURNING singer_id, name;",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "singer_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text",
+        "Int4"
+      ]
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "6f2b8862d4d7ca74f2b9d1603c299f139eb169118326c47cd0419df5b57139cf"
+}

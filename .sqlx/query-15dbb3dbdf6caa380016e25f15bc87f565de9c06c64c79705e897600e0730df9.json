@@ -1,0 +1,28 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "INSERT INTO singers (name) VALUES ($1) RETURNING singer_id, name;",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "singer_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "name",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false
+    ]
+  },
+  "hash": "15dbb3dbdf6caa380016e25f15bc87f565de9c06c64c79705e897600e0730df9"
+}

@@ -1,0 +1,44 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT session_id, state, songs_per_singer, current_queue_entry_id, updated_at FROM sessions WHERE state = 'active'",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "session_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "state",
+        "type_info": "Varchar"
+      },
+      {
+        "ordinal": 2,
+        "name": "songs_per_singer",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 3,
+        "name": "current_queue_entry_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 4,
+        "name": "updated_at",
+        "type_info": "Timestamp"
+      }
+    ],
+    "parameters": {
+      "Left": []
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      false
+    ]
+  },
+  "hash": "60d8ea0023b0601bf47b6baa65d3235fd5d05e6f3cbdffa165e568346bf65167"
+}
