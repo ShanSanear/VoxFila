@@ -1,10 +1,7 @@
 use crate::components::SessionCard;
-use ::server::sessions::{get_active_session, list_sessions};
+use ::server::sessions::list_sessions;
 use dioxus::prelude::*;
-use dioxus_i18n::prelude::i18n;
-use dioxus_i18n::unic_langid::langid;
-use dioxus_logger::tracing::{debug, error, info};
-use shared::models::{SecondSingerDetails, SingerDetails};
+use dioxus_logger::tracing::debug;
 
 #[component]
 pub fn SessionManagement() -> Element {

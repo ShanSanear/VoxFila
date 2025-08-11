@@ -1,6 +1,6 @@
 use serde::{Deserialize, Serialize};
 
-use chrono::{DateTime, NaiveDateTime, Utc};
+use chrono::NaiveDateTime;
 
 use crate::models::{SecondSingerDetails, SingerDetails, SongDetails};
 

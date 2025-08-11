@@ -1,7 +1,6 @@
 use crate::components::LanguageSelector;
 use crate::views::Route;
 use dioxus::prelude::*;
-use dioxus_i18n::t;
 /// The Navbar component that will be rendered on all pages of our app
 #[component]
 pub fn Navbar() -> Element {

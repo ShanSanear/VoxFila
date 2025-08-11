@@ -1,5 +1,5 @@
 mod language_selector;
-pub use language_selector::{LanguageSelector, LanguageStaticEnglish, LanguageStaticPolish};
+pub use language_selector::LanguageSelector;
 
 mod song_card;
 pub use song_card::SongCard;

@@ -1,12 +1,7 @@
-use crate::components::{QueueEntryCard, SingersCard};
-use crate::views::Route;
-use ::server::{
-    complete_queue_entry, create_queue_entry, list_pending_queue_entries, list_queue_entries,
-    remove_queue_entry, songs::get_song,
-};
+use crate::components::QueueEntryCard;
+use ::server::list_pending_queue_entries;
 use dioxus::prelude::*;
-use dioxus_logger::tracing::{debug, error, info};
-use shared::models::{QueueEntryDetails, SingerDetails, SongDetails};
+use dioxus_logger::tracing::debug;
 
 use crate::components::SESSION_ID;
 

@@ -1,7 +1,6 @@
 use dioxus::prelude::*;
-use log::{debug, info};
 
-use shared::models::{NewSession, SessionDetails, SessionState, SessionUpdate};
+use shared::models::{NewSession, SessionDetails, SessionState};
 
 #[cfg(feature = "db")]
 use crate::database::get_db;

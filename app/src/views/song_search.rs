@@ -1,6 +1,6 @@
-use ::server::songs::{list_songs_dummy, search_songs};
+use ::server::songs::search_songs;
 use dioxus::prelude::*;
-use dioxus_logger::tracing::{debug, info};
+use dioxus_logger::tracing::debug;
 
 use crate::components::{SongCard, UserNewSongRequest};
 

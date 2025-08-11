@@ -1,5 +1,4 @@
 use dioxus::prelude::*;
-use log::{debug, info};
 
 use shared::models::{NewSong, SongDetails};
 

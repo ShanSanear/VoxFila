@@ -1,6 +1,5 @@
 use crate::views::{Navbar, SessionManagement, SongQueue, SongRequest, SongSearch, TestComponent};
 use dioxus::prelude::*;
-use shared::models::SongDetails;
 /// The Route enum is used to define the structure of internal routes in our app. All route enums need to derive
 /// the [`Routable`] trait, which provides the necessary methods for the router to work.
 /// 

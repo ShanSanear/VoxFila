@@ -1,6 +1,4 @@
-use crate::dioxus_elements::math::display;
 use dioxus::prelude::*;
-use dioxus_logger::tracing::{debug, info};
 
 #[component]
 pub fn TestComponent() -> Element {

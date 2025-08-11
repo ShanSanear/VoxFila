@@ -1,6 +1,4 @@
 use dioxus::prelude::*;
-use dioxus_i18n::prelude::i18n;
-use dioxus_i18n::unic_langid::langid;
 use shared::models::SongDetails;
 
 #[derive(PartialEq, Clone, Props)]

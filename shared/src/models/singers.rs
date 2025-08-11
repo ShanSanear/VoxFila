@@ -1,6 +1,5 @@
 use serde::{Deserialize, Serialize};
 
-use chrono::{DateTime, NaiveDateTime, Utc};
 
 #[derive(Deserialize, Serialize, Clone, Debug)]
 pub struct NewSinger {

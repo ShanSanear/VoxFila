@@ -1,11 +1,7 @@
 #[cfg(feature = "db")]
 use crate::database::get_db;
 
-use dioxus::logger::tracing::{debug, info};
-use dioxus::{
-    logger::{self, tracing},
-    prelude::*,
-};
+use dioxus::prelude::*;
 
 use shared::models::{NewSinger, SingerDetails, SingerUpdate};
 

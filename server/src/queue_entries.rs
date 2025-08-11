@@ -1,9 +1,7 @@
 use dioxus::prelude::*;
-use log::{debug, info};
 
-use shared::models::{session, NewSong, QueueEntryDetails, QueueEntryStatus, SingerDetails};
+use shared::models::QueueEntryDetails;
 
-use crate::singers::get_or_create_singer;
 
 #[cfg(feature = "db")]
 use crate::database::get_db;

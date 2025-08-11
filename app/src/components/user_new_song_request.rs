@@ -1,12 +1,8 @@
 use ::server::songs::save_song;
-use dioxus::html::u;
 
 use dioxus::prelude::*;
-use dioxus_i18n::prelude::i18n;
-use dioxus_i18n::unic_langid::langid;
-use dioxus_logger::tracing::{debug, error, info};
+use dioxus_logger::tracing::{error, info};
 use shared::models::NewSong;
-use shared::models::SongDetails;
 
 use crate::views::Route;
 
@@ -70,7 +66,7 @@ pub fn UserNewSongRequestDialogSuccess(
 
 #[component]
 pub fn UserNewSongRequest(open: Signal<bool>) -> Element {
-    let mut confirmed = use_signal(|| false);
+    let confirmed = use_signal(|| false);
     let mut open_dialog = use_signal(|| false);
     let mut song_id: Signal<Option<i32>> = use_signal(|| None);
     let mut song_title = use_signal(|| String::new());

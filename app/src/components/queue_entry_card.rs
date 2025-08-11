@@ -1,7 +1,5 @@
 use crate::components::{SingersCard, SongCard, SongLinksCard};
 use dioxus::prelude::*;
-use dioxus_i18n::prelude::i18n;
-use dioxus_i18n::unic_langid::langid;
 use shared::models::QueueEntryDetails;
 
 #[derive(PartialEq, Clone, Props)]

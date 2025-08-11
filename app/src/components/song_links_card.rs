@@ -1,6 +1,4 @@
 use dioxus::prelude::*;
-use dioxus_i18n::prelude::i18n;
-use dioxus_i18n::unic_langid::langid;
 use shared::models::SongDetails;
 
 use crate::utils::get_yt_search_link_for_song;
