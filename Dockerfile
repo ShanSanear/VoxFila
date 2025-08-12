@@ -17,13 +17,16 @@ RUN apt update && apt install -y curl
 RUN curl -L --proto '=https' --tlsv1.2 -sSf https://raw.githubusercontent.com/cargo-bins/cargo-binstall/main/install-from-binstall-release.sh | bash
 ENV PATH="/.cargo/bin:$PATH"
 RUN cargo binstall dioxus-cli --root /.cargo -y --force
-
+RUN cargo binstall sqlx-cli --root /.cargo -y --force
 
 RUN dx bundle --platform web -p app
 
 RUN strip /app/target/dx/app/release/web/server
 
-FROM debian:bullseye-slim AS runtime
+FROM debian:bookworm AS runtime
+WORKDIR /usr/local/app
+COPY --from=builder /app/migrations /usr/local/app/migrations
+COPY --from=builder /.cargo/bin/sqlx sqlx
 COPY --from=builder /app/target/dx/app/release/web/ /usr/local/app
 
 ENV PORT=8080
@@ -31,5 +34,5 @@ ENV IP=0.0.0.0
 
 EXPOSE 8080
 
-WORKDIR /usr/local/app
+
 ENTRYPOINT [ "/usr/local/app/server" ]

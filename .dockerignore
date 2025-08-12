@@ -7,7 +7,7 @@ target
 docs
 pgadmin
 .env
-LICENSES
-LICENSE
+LICENSE*
 temp
 README.md
+docker-compose*
