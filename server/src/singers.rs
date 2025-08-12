@@ -2,6 +2,7 @@
 use crate::database::get_db;
 
 use dioxus::prelude::*;
+use dioxus_logger::tracing::{debug, info};
 
 use shared::models::{NewSinger, SingerDetails, SingerUpdate};
 

@@ -1,4 +1,5 @@
 use dioxus::prelude::*;
+use dioxus_logger::tracing::info;
 
 use shared::models::{NewSession, SessionDetails, SessionState};
 

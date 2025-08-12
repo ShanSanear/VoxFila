@@ -1,7 +1,8 @@
 use dioxus::prelude::*;
+use dioxus_logger::tracing::{debug, info};
 
+use crate::singers::get_or_create_singer;
 use shared::models::QueueEntryDetails;
-
 
 #[cfg(feature = "db")]
 use crate::database::get_db;
