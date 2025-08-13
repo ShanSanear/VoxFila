@@ -16,7 +16,16 @@ pub async fn create_queue_entry(
     notes: String,
 ) -> Result<i32, ServerFnError> {
     let db = get_db().await;
-    let session_id = get_current_session().await?.session_id;
+    let session = get_current_session().await?;
+    let mut session_id = -1;
+    match session {
+        Some(session) => {
+            session_id = session.session_id;
+        }
+        None => {
+            return Err(ServerFnError::new("No active session found"));
+        }
+    }
     let singer = get_or_create_singer(singer_name).await?;
 
     let second_singer = if let Some(second_singer_name) = second_singer_name {
@@ -92,7 +101,16 @@ WHERE qe.queue_entry_id=$1;"#,
 
 #[server]
 pub async fn list_queue_entries() -> Result<Vec<QueueEntryDetails>, ServerFnError> {
-    let session_id = get_current_session().await?.session_id;
+    let session = get_current_session().await?;
+    let mut session_id = -1;
+    match session {
+        Some(session) => {
+            session_id = session.session_id;
+        }
+        None => {
+            return Err(ServerFnError::new("No active session found"));
+        }
+    }
     let db = get_db().await;
     let result: Vec<QueueEntryDetails> = sqlx::query_as(
         r#"SELECT qe.queue_entry_id,
@@ -131,7 +149,16 @@ WHERE qe.session_id=$1;"#,
 
 #[server]
 pub async fn list_pending_queue_entries() -> Result<Vec<QueueEntryDetails>, ServerFnError> {
-    let session_id = get_current_session().await?.session_id;
+    let session = get_current_session().await?;
+    let mut session_id = -1;
+    match session {
+        Some(session) => {
+            session_id = session.session_id;
+        }
+        None => {
+            return Err(ServerFnError::new("No active session found"));
+        }
+    }
     let db = get_db().await;
     let result: Vec<QueueEntryDetails> = sqlx::query_as(
         r#"SELECT qe.queue_entry_id,

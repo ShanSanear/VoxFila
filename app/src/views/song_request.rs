@@ -64,15 +64,7 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
     let mut open_success = use_signal(|| false);
     let mut error_open = use_signal(|| false);
     let mut error_message = use_signal(|| String::new());
-    let session_id = use_resource(|| async move {
-        match get_current_session().await {
-            Ok(session) => session.session_id,
-            Err(e) => {
-                error!("Error fetching current session id: {}", e);
-                -1
-            }
-        }
-    });
+
     //TODO translations
     rsx! {
         div { class: "flex flex-col items-center w-full max-w-md",
