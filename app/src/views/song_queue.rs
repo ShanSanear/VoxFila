@@ -3,11 +3,9 @@ use ::server::list_pending_queue_entries;
 use dioxus::prelude::*;
 use dioxus_logger::tracing::debug;
 
-use crate::components::SESSION_ID;
-
 #[component]
 pub fn SongQueue() -> Element {
-    let queue_entries = use_resource(|| async { list_pending_queue_entries(SESSION_ID()).await });
+    let queue_entries = use_resource(|| async { list_pending_queue_entries().await });
     rsx! {
         div { class: "flex container mx-auto px-4 py-6 flex items-center justify-center flex-col",
             h1 { class: "text-2xl font-bold", "Song Queue" }

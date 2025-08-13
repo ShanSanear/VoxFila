@@ -1,12 +1,10 @@
 use crate::components::SongCard;
 use crate::views::Route;
-use ::server::{create_queue_entry, songs::get_song};
+use ::server::{create_queue_entry, sessions::get_current_session, songs::get_song};
 use dioxus::prelude::*;
 use dioxus_logger::tracing::{debug, error, info};
 
 use shared::utils::validation::validate_inputs;
-
-use crate::components::SESSION_ID;
 
 #[derive(PartialEq, Clone, Props)]
 pub struct SongRequestInputProps {
@@ -66,6 +64,15 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
     let mut open_success = use_signal(|| false);
     let mut error_open = use_signal(|| false);
     let mut error_message = use_signal(|| String::new());
+    let session_id = use_resource(|| async move {
+        match get_current_session().await {
+            Ok(session) => session.session_id,
+            Err(e) => {
+                error!("Error fetching current session id: {}", e);
+                -1
+            }
+        }
+    });
     //TODO translations
     rsx! {
         div { class: "flex flex-col items-center w-full max-w-md",
@@ -119,7 +126,6 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
                                 error_open.set(true);
                             } else {
                                 match create_queue_entry(
-                                        SESSION_ID(),
                                         singer_name(),
                                         props.id,
                                         second_singer_name(),

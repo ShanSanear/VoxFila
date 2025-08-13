@@ -1,6 +1,7 @@
 use dioxus::prelude::*;
 use dioxus_logger::tracing::{debug, info};
 
+use crate::sessions::get_current_session;
 use crate::singers::get_or_create_singer;
 use shared::models::QueueEntryDetails;
 
@@ -9,13 +10,13 @@ use crate::database::get_db;
 
 #[server]
 pub async fn create_queue_entry(
-    session_id: i32,
     singer_name: String,
     song_id: i32,
     second_singer_name: Option<String>,
     notes: String,
 ) -> Result<i32, ServerFnError> {
     let db = get_db().await;
+    let session_id = get_current_session().await?.session_id;
     let singer = get_or_create_singer(singer_name).await?;
 
     let second_singer = if let Some(second_singer_name) = second_singer_name {
@@ -90,7 +91,8 @@ WHERE qe.queue_entry_id=$1;"#,
 }
 
 #[server]
-pub async fn list_queue_entries(session_id: i32) -> Result<Vec<QueueEntryDetails>, ServerFnError> {
+pub async fn list_queue_entries() -> Result<Vec<QueueEntryDetails>, ServerFnError> {
+    let session_id = get_current_session().await?.session_id;
     let db = get_db().await;
     let result: Vec<QueueEntryDetails> = sqlx::query_as(
         r#"SELECT qe.queue_entry_id,
@@ -128,9 +130,8 @@ WHERE qe.session_id=$1;"#,
 }
 
 #[server]
-pub async fn list_pending_queue_entries(
-    session_id: i32,
-) -> Result<Vec<QueueEntryDetails>, ServerFnError> {
+pub async fn list_pending_queue_entries() -> Result<Vec<QueueEntryDetails>, ServerFnError> {
+    let session_id = get_current_session().await?.session_id;
     let db = get_db().await;
     let result: Vec<QueueEntryDetails> = sqlx::query_as(
         r#"SELECT qe.queue_entry_id,

@@ -14,4 +14,4 @@ pub mod singers;
 pub use singers::{get_or_create_singer, get_singer, list_singers};
 
 pub mod sessions;
-pub use sessions::{get_active_session, list_sessions};
+pub use sessions::{get_current_session, list_sessions};

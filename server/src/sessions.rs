@@ -1,5 +1,5 @@
 use dioxus::prelude::*;
-use dioxus_logger::tracing::info;
+use dioxus_logger::tracing::{error, info};
 
 use shared::models::{NewSession, SessionDetails, SessionState};
 
@@ -21,12 +21,12 @@ pub async fn list_sessions() -> Result<Vec<SessionDetails>, ServerFnError> {
 }
 
 #[server]
-pub async fn get_active_session() -> Result<SessionDetails, ServerFnError> {
+pub async fn get_current_session() -> Result<SessionDetails, ServerFnError> {
     info!("Getting active session from database");
     let db = get_db().await;
     let result = sqlx::query_as!(
         SessionDetails,
-        "SELECT session_id, state, songs_per_singer, current_queue_entry_id, updated_at FROM sessions WHERE state = 'active'"
+        "SELECT session_id, state, songs_per_singer, current_queue_entry_id, updated_at FROM sessions WHERE state = 'current'"
     )
     .fetch_one(db)
     .await?;
@@ -98,14 +98,26 @@ pub async fn update_session_current_queue_entry_id(
 pub async fn create_new_session(new_session: NewSession) -> Result<SessionDetails, ServerFnError> {
     info!("Creating new session");
     let db = get_db().await;
+    let current_session = get_current_session().await?;
+    update_session_state(current_session.session_id, SessionState::Finished).await?;
     let result = sqlx::query_as!(
         SessionDetails,
-        "INSERT INTO sessions (songs_per_singer) VALUES ($1)
+        "INSERT INTO sessions (songs_per_singer, state) VALUES ($1, $2)
         RETURNING session_id, state, songs_per_singer, current_queue_entry_id, updated_at",
         new_session.songs_per_singer,
+        SessionState::Current.to_string()
     )
     .fetch_one(db)
-    .await?;
+    .await;
     info!("New session created successfully");
-    Ok(result)
+    match result {
+        Ok(session) => {
+            info!("New session details: {:?}", session);
+            Ok(session)
+        }
+        Err(e) => {
+            error!("Error creating new session: {}", e);
+            Err(ServerFnError::new("Failed to create new session"))
+        }
+    }
 }

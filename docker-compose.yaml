@@ -1,8 +1,9 @@
+name: voxfila-dev
 services:
   postgres:
     image: postgres
     volumes:
-      - db-data:/var/lib/postgresql/data
+      - voxfila-dev_db-data:/var/lib/postgresql/data
     ports:
       - 42222:5432
     environment:
@@ -23,7 +24,8 @@ services:
     networks:
       - default
 volumes:
-  db-data:
+  voxfila-dev_db-data:
+    external: true
 networks:
   default:
     driver: bridge

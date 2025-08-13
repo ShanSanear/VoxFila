@@ -5,7 +5,6 @@ mod song_card;
 pub use song_card::SongCard;
 
 mod global_states;
-pub use global_states::SESSION_ID;
 
 mod user_new_song_request;
 pub use user_new_song_request::UserNewSongRequest;
