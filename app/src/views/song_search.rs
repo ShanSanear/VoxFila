@@ -9,13 +9,7 @@ use crate::views::Route;
 #[component]
 pub fn SongSearch() -> Element {
     let mut current_search = use_signal(|| String::new());
-    let songs = use_resource(move || async move {
-        if current_search().len() > 3 {
-            search_songs(current_search().clone()).await
-        } else {
-            Ok(vec![])
-        }
-    });
+    let songs = use_resource(move || async move { search_songs(current_search().clone()).await });
     let mut open_new_song_request = use_signal(|| false);
     rsx! {
         div { class: "flex container mx-auto px-4 py-6 flex items-center justify-center flex-col",
@@ -38,11 +32,14 @@ pub fn SongSearch() -> Element {
                     Some(Ok(songs_list)) => {
                         rsx! {
                             for song in songs_list.iter() {
-                                Link {
-                                    to: Route::SongRequest {
-                                        id: song.song_id,
-                                    },
+                                div { id: "song-{song.song_id}", class: "mt-4",
                                     SongCard { song: song.clone() }
+                                    Link {
+                                        to: Route::SongRequest {
+                                            id: song.song_id,
+                                        },
+                                        button { class: "btn btn-accent", "Request this song" }
+                                    }
                                 }
                             }
                             if songs_list.is_empty() {

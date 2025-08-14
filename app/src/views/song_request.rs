@@ -67,91 +67,105 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
 
     //TODO translations
     rsx! {
-        div { class: "flex flex-col items-center w-full max-w-md",
-            input {
-                r#type: "text",
-                class: "input input-bordered w-full max-w-md mt-2",
-                placeholder: "Enter your name",
-                value: "{singer_name}",
-                oninput: move |e| {
-                    debug!("Singer name input changed: {}", e.value());
-                    singer_name.set(e.value());
-                },
-            }
-            input {
-                r#type: "text",
-                class: "input input-bordered w-full max-w-md mt-2",
-                placeholder: "Enter other singer's name (Optional)",
-                value: "{second_singer_name().unwrap_or_default()}",
-                oninput: move |e| {
-                    debug!("Second singer name input changed: {}", e.value());
-                    if e.value().is_empty() {
-                        second_singer_name.set(None);
-                    } else {
-                        second_singer_name.set(Some(e.value()));
+        div { class: "space-y-4",
+            div { class: "form-control",
+                label { class: "label",
+                    span { class: "label-text", "Your Name *" }
+                }
+                input {
+                    r#type: "text",
+                    class: "input input-bordered",
+                    placeholder: "Enter your name",
+                    value: "{singer_name}",
+                    oninput: move |e| {
+                        debug!("Singer name input changed: {}", e.value());
+                        singer_name.set(e.value());
+                    },
+                }
+                div { class: "form-control",
+                    label { class: "label",
+                        span { class: "label-text flex items-center gap-2", "Duet Partner (Optional)" }
                     }
-                },
-            }
-
-
-            input {
-                r#type: "text",
-                class: "input input-bordered w-full max-w-md mt-2 h-20",
-                placeholder: "Enter any notes",
-                value: "{notes}",
-                oninput: move |e| {
-                    debug!("Notes input changed: {}", e.value());
-                    notes.set(e.value());
-                },
-            }
-            div { class: "mt-2 flex items-center justify-between w-full",
-                button {
-                    class: "btn btn-primary mx-4",
-                    onclick: move |_| {
-                        async move {
-                            debug!(
-                                "Submitting song request with singer: {}, second singer: {}, notes: {}",
-                                singer_name(), second_singer_name().unwrap_or_default(), notes()
-                            );
-                            if !validate_inputs(&singer_name(), &second_singer_name(), &notes()) {
-                                error!("Invalid inputs provided for song request.");
-                                error_open.set(true);
+                    input {
+                        r#type: "text",
+                        class: "input input-bordered w-full max-w-md mt-2",
+                        placeholder: "Name of duet partner",
+                        value: "{second_singer_name().unwrap_or_default()}",
+                        oninput: move |e| {
+                            debug!("Second singer name input changed: {}", e.value());
+                            if e.value().is_empty() {
+                                second_singer_name.set(None);
                             } else {
-                                match create_queue_entry(
-                                        singer_name(),
-                                        props.id,
-                                        second_singer_name(),
-                                        notes(),
-                                    )
-                                    .await
-                                {
-                                    Ok(_) => {
-                                        debug!("Song request created successfully.");
-                                        open_success.set(true);
-                                    }
-                                    Err(e) => {
-                                        error!("Error creating queue entry: {e}");
-                                        error_message.set(format!("Error creating queue entry: {e}"));
-                                        error_open.set(true);
+                                second_singer_name.set(Some(e.value()));
+                            }
+                        },
+                    }
+                }
+
+                div { class: "form-control",
+                    label { class: "label",
+                        span { class: "label-text", "Notes (Optional)" }
+                    }
+                    textarea {
+                        class: "input input-bordered w-full max-w-md mt-2 h-20",
+                        placeholder: "Any special notes or requests...",
+                        value: "{notes}",
+                        rows: "3",
+                        oninput: move |e| {
+                            debug!("Notes input changed: {}", e.value());
+                            notes.set(e.value());
+                        },
+                    }
+                }
+                div { class: "modal-action",
+                    button {
+                        class: "btn btn-primary",
+                        onclick: move |_| {
+                            async move {
+                                debug!(
+                                    "Submitting song request with singer: {}, second singer: {}, notes: {}",
+                                    singer_name(), second_singer_name().unwrap_or_default(), notes()
+                                );
+                                if !validate_inputs(&singer_name(), &second_singer_name(), &notes()) {
+                                    error!("Invalid inputs provided for song request.");
+                                    error_open.set(true);
+                                } else {
+                                    match create_queue_entry(
+                                            singer_name(),
+                                            props.id,
+                                            second_singer_name(),
+                                            notes(),
+                                        )
+                                        .await
+                                    {
+                                        Ok(_) => {
+                                            debug!("Song request created successfully.");
+                                            open_success.set(true);
+                                        }
+                                        Err(e) => {
+                                            error!("Error creating queue entry: {e}");
+                                            error_message.set(format!("Error creating queue entry: {e}"));
+                                            error_open.set(true);
+                                        }
                                     }
                                 }
                             }
-                        }
-                    },
-                    "Submit Request"
-                }
-                button {
-                    class: "btn btn-secondary mx-4",
-                    onclick: move |_| {
-                        let nav = navigator();
-                        nav.push(Route::SongSearch {});
-                    },
-                    "Back to Search"
+                        },
+                        "Add to Queue"
+                    }
+                    button {
+                        class: "btn btn-ghost",
+                        onclick: move |_| {
+                            let nav = navigator();
+                            nav.push(Route::SongSearch {});
+                        },
+                        "Cancel"
+                    }
                 }
             }
+            SuccessModal { open: open_success }
+            InputErrorModal { open: error_open, message: error_message() }
         }
-        SuccessModal { open: open_success }
-        InputErrorModal { open: error_open, message: error_message() }
     }
 }
 
@@ -163,6 +177,10 @@ pub fn SongRequest(id: i32) -> Element {
             Some(Ok(song_details)) => {
                 rsx! {
                     div { class: "flex container mx-auto px-4 py-6 flex items-center flex-col",
+                        h3 { class: "font-bold text-lg mb-4", "Request Song" }
+                        p { class: "text-sm opacity-70 mb-4",
+                            "Fill out the form below to add this song to the karaoke queue."
+                        }
                         SongCard { song: song_details.clone() }
                         SongRequestInputs { id }
                     }
