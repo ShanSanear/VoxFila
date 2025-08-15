@@ -38,7 +38,7 @@ pub fn SongSearch() -> Element {
                                         to: Route::SongRequest {
                                             id: song.song_id,
                                         },
-                                        button { class: "btn btn-accent", "Request this song" }
+                                        button { class: "btn btn-primary", "Request" }
                                     }
                                 }
                             }

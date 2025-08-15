@@ -1417,6 +1417,12 @@
   align-items: center;
   flex-shrink: 0;
 }
+.card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: calc(0.25rem * 2);
+}
 .card-title {
   display: flex;
   align-items: center;
@@ -1621,6 +1627,9 @@
 }
 .justify-center {
   justify-content: center;
+}
+.justify-start {
+  justify-content: flex-start;
 }
 .gap-1 {
   gap: calc(var(--spacing) * 1);

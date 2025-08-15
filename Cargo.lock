@@ -110,6 +110,7 @@ dependencies = [
  "server",
  "shared",
  "tokio",
+ "url",
 ]
 
 [[package]]

@@ -1,6 +1,9 @@
 use crate::components::{SingersCard, SongCard, SongLinksCard};
+use crate::utils::{get_ising_search_link_for_song, get_yt_search_link_for_song};
 use dioxus::prelude::*;
-use dioxus_free_icons::icons::ld_icons::{LdChevronDown, LdChevronUp, LdPause, LdPlay, LdTrash};
+use dioxus_free_icons::icons::ld_icons::{
+    LdChevronDown, LdChevronUp, LdExternalLink, LdPause, LdPlay, LdTrash, LdYoutube,
+};
 use dioxus_free_icons::Icon;
 use shared::models::QueueEntryDetails;
 
@@ -46,12 +49,40 @@ fn IconPause() -> Element {
 }
 
 #[component]
+fn IconLinkWithText(link: String, text: String) -> Element {
+    rsx!(
+        a {
+            class: "btn btn-outline btn-sm gap-2",
+            href: "{link}",
+            target: "_blank",
+            Icon { icon: LdExternalLink }
+            "{text}"
+        }
+    )
+}
+
+#[component]
+fn IconYtLinkWithText(link: String) -> Element {
+    rsx!(
+        a {
+            class: "btn btn-outline btn-sm gap-2",
+            href: "{link}",
+            target: "_blank",
+            Icon { icon: LdYoutube }
+            "YouTube"
+        }
+    )
+}
+
+#[component]
 pub fn QueueEntryCard(props: QueueEntryCardProps) -> Element {
     let song = props.queue_entry_details.song.clone();
     let title = song.title;
     let artist = song.artist;
     let singer_name = props.queue_entry_details.singer.name;
     let second_singer_name = props.queue_entry_details.second_singer.second_singer_name;
+    let yt_link = song.yturl;
+    let ising_link = song.isingurl;
     rsx!(
         div { class: "card bg-base-200 shadow-md hover:shadow-lg transition-shadow cursor-move",
             div { class: "card-body",
@@ -83,6 +114,31 @@ pub fn QueueEntryCard(props: QueueEntryCardProps) -> Element {
                         }
                     }
                 }
+                div { class: "card-actions justify-start mt-3",
+                    match yt_link {
+                        Some(link) => rsx! {
+                            IconYtLinkWithText { link }
+                        },
+                        None => rsx! {
+                            IconYtLinkWithText { link: get_yt_search_link_for_song(artist.as_str(), title.as_str()) }
+                        },
+                    }
+                    match ising_link {
+                        Some(link) => rsx! {
+                            IconLinkWithText { link, text: "Ising" }
+                        },
+                        None => {
+                            rsx! {
+                                IconLinkWithText {
+                                    link: get_ising_search_link_for_song(artist.as_str(), title.as_str()),
+                                    text: "Ising",
+                                }
+                            }
+                        }
+                    }
+                }
+            
+
             }
         }
     )
