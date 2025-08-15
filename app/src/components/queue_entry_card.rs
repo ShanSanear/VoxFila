@@ -15,6 +15,8 @@ pub struct QueueEntryCardProps {
     index: usize,
     queue_entry_details: QueueEntryDetails,
     queue_entries_signal: Resource<Result<Vec<QueueEntryDetails>, ServerFnError>>,
+    queue_entry_id_above: Option<i32>,
+    queue_entry_id_below: Option<i32>,
 }
 
 #[component]
@@ -81,6 +83,7 @@ fn IconYtLinkWithText(link: String) -> Element {
 #[component]
 fn QueueEntryActions(
     entry_id: i32,
+    queue_entry_below: Option<i32>,
     queue_entries_signal: Resource<Result<Vec<QueueEntryDetails>, ServerFnError>>,
 ) -> Element {
     rsx!(
