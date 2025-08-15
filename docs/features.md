@@ -56,7 +56,7 @@ Admin MUST be able to review feedback for the app
 
 ## Deployment
 
-App MUST have appropriate Dockerfile and docker-compose that makes it possible to deploy
+~~App MUST have appropriate Dockerfile and docker-compose that makes it possible to deploy~~
 
 Docker compose file MAY have additional nginx component
 
