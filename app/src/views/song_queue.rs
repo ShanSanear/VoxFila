@@ -5,7 +5,7 @@ use dioxus_logger::tracing::debug;
 
 #[component]
 pub fn SongQueue() -> Element {
-    let queue_entries = use_resource(|| async { list_pending_queue_entries().await });
+    let mut queue_entries = use_resource(|| async { list_pending_queue_entries().await });
     rsx! {
         div { class: "flex-1 p-4 ",
             div { class: "h-[calc(100vh-12rem)] lg:h-[calc(100vh-10rem)]",
@@ -18,7 +18,11 @@ pub fn SongQueue() -> Element {
                                     for (index , queue_entry) in entries.iter().enumerate() {
                                     
                                     
-                                        QueueEntryCard { index, queue_entry_details: queue_entry.clone() }
+                                        QueueEntryCard {
+                                            index,
+                                            queue_entry_details: queue_entry.clone(),
+                                            queue_entries_signal: queue_entries,
+                                        }
                                     }
                                     if entries.is_empty() {
                                         div { class: "mt-4 text-lg", "No queue entries found." }

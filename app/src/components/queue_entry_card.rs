@@ -1,5 +1,6 @@
 use crate::components::{SingersCard, SongCard, SongLinksCard};
 use crate::utils::{get_ising_search_link_for_song, get_yt_search_link_for_song};
+use ::server::queue_entries::remove_queue_entry;
 use dioxus::prelude::*;
 use dioxus_free_icons::icons::ld_icons::{
     LdChevronDown, LdChevronUp, LdExternalLink, LdPause, LdPlay, LdTrash, LdYoutube,
@@ -7,10 +8,13 @@ use dioxus_free_icons::icons::ld_icons::{
 use dioxus_free_icons::Icon;
 use shared::models::QueueEntryDetails;
 
+use dioxus_logger::tracing::{debug, error, info};
+
 #[derive(PartialEq, Clone, Props)]
 pub struct QueueEntryCardProps {
     index: usize,
     queue_entry_details: QueueEntryDetails,
+    queue_entries_signal: Resource<Result<Vec<QueueEntryDetails>, ServerFnError>>,
 }
 
 #[component]
@@ -75,6 +79,37 @@ fn IconYtLinkWithText(link: String) -> Element {
 }
 
 #[component]
+fn QueueEntryActions(
+    entry_id: i32,
+    queue_entries_signal: Resource<Result<Vec<QueueEntryDetails>, ServerFnError>>,
+) -> Element {
+    rsx!(
+        div { class: "flex gap-1",
+            button { class: "btn btn-outline btn-xs", IconMoveUp {} }
+            button { class: "btn btn-outline btn-xs", IconMoveDown {} }
+            button { class: "btn btn-primary btn-xs gap-1", IconPlay {} }
+            button { class: "btn btn-info btn-xs gap-1", IconPause {} }
+            button {
+                class: "btn btn-error btn-xs gap-1",
+                onclick: move |_| async move {
+                    debug!("Removing queue entry with ID: {entry_id}");
+                    match remove_queue_entry(entry_id).await {
+                        Ok(_) => {
+                            debug!("Queue entry with ID {entry_id} removed successfully.");
+                            queue_entries_signal.restart();
+                        }
+                        Err(e) => {
+                            error!("Error removing queue entry with ID {entry_id}: {e}");
+                        }
+                    }
+                },
+                IconTrash {}
+            }
+        }
+    )
+}
+
+#[component]
 pub fn QueueEntryCard(props: QueueEntryCardProps) -> Element {
     let song = props.queue_entry_details.song.clone();
     let title = song.title;
@@ -84,22 +119,19 @@ pub fn QueueEntryCard(props: QueueEntryCardProps) -> Element {
     let yt_link = song.yturl;
     let ising_link = song.isingurl;
     rsx!(
-        div { class: "card bg-base-200 shadow-md hover:shadow-lg transition-shadow cursor-move",
+        div { class: "card bg-base-200 shadow-md hover:shadow-lg transition-shadow",
             div { class: "card-body",
                 div { class: "flex items-start gap-3",
                     div { class: "flex flex-col items-center gap-1",
                         div { class: "badge badge-sm", "#{props.index + 1}. " }
                     }
-                    div { class: "flex-1 min-w-0",
+                    div { class: "flex-1",
                         h3 { class: "card-title text-base truncate", "{title}" }
                         p { class: "text-base-content/70 truncate", "{artist}" }
                     }
-                    div { class: "flex gap-1",
-                        button { class: "btn btn-outline btn-xs", IconMoveUp {} }
-                        button { class: "btn btn-outline btn-xs", IconMoveDown {} }
-                        button { class: "btn btn-primary btn-xs gap-1", IconPlay {} }
-                        button { class: "btn btn-info btn-xs gap-1", IconPause {} }
-                        button { class: "btn btn-error btn-xs gap-1", IconTrash {} }
+                    QueueEntryActions {
+                        entry_id: props.queue_entry_details.queue_entry_id,
+                        queue_entries_signal: props.queue_entries_signal,
                     }
                 }
                 div { class: "space-y-2 mt-3",

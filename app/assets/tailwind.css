@@ -1548,16 +1548,28 @@
 .min-w-0 {
   min-width: calc(var(--spacing) * 0);
 }
+.min-w-80 {
+  min-width: calc(var(--spacing) * 80);
+}
 .flex-1 {
   flex: 1;
 }
 .flex-1\/2 {
   flex: calc(1/2 * 100%);
 }
+.flex-4 {
+  flex: 4;
+}
+.flex-4\/5 {
+  flex: calc(4/5 * 100%);
+}
 .flex-shrink {
   flex-shrink: 1;
 }
 .flex-shrink-0 {
+  flex-shrink: 0;
+}
+.shrink-0 {
   flex-shrink: 0;
 }
 .flex-grow {
@@ -2127,6 +2139,11 @@
 .disabled\:opacity-50 {
   &:disabled {
     opacity: 50%;
+  }
+}
+.md\:shrink-0 {
+  @media (width >= 48rem) {
+    flex-shrink: 0;
   }
 }
 .lg\:col-span-2 {

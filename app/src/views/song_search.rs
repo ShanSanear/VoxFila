@@ -12,7 +12,7 @@ pub fn SongSearch() -> Element {
     let songs = use_resource(move || async move { search_songs(current_search().clone()).await });
     let mut open_new_song_request = use_signal(|| false);
     rsx! {
-        div { class: "flex container mx-auto px-4 py-6 flex items-center justify-center flex-col",
+        div {
             input {
                 id: "song-search-input",
                 class: "input input-bordered w-full max-w-xl",

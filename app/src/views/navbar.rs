@@ -30,6 +30,8 @@ pub fn Navbar() -> Element {
             // Optional: right side for future elements like account/settings
             div { class: "navbar-end", LanguageSelector {} }
         }
-        Outlet::<Route> {}
+        div { class: "flex container h-[calc(100vh-12rem)] lg:h-[calc(100vh-10rem)] min-w-80 md:shrink-0 mx-auto px-4 py-6 items-center flex-col flex-4/5",
+            Outlet::<Route> {}
+        }
     }
 }
