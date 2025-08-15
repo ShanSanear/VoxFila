@@ -1,6 +1,6 @@
 use crate::components::{SingersCard, SongCard, SongLinksCard};
 use crate::utils::{get_ising_search_link_for_song, get_yt_search_link_for_song};
-use ::server::queue_entries::remove_queue_entry;
+use ::server::queue_entries::{move_queue_entry_after_other_entry, remove_queue_entry};
 use dioxus::prelude::*;
 use dioxus_free_icons::icons::ld_icons::{
     LdChevronDown, LdChevronUp, LdExternalLink, LdPause, LdPlay, LdTrash, LdYoutube,
@@ -83,13 +83,46 @@ fn IconYtLinkWithText(link: String) -> Element {
 #[component]
 fn QueueEntryActions(
     entry_id: i32,
-    queue_entry_below: Option<i32>,
+    queue_entry_id_below: Option<i32>,
+    queue_entry_id_above: Option<i32>,
     queue_entries_signal: Resource<Result<Vec<QueueEntryDetails>, ServerFnError>>,
 ) -> Element {
     rsx!(
         div { class: "flex gap-1",
-            button { class: "btn btn-outline btn-xs", IconMoveUp {} }
-            button { class: "btn btn-outline btn-xs", IconMoveDown {} }
+            button {
+                class: "btn btn-outline btn-xs",
+                disabled: queue_entry_id_above.is_none(),
+                onclick: move |_| async move {
+                    if let Some(entry_id_above) = queue_entry_id_above {
+                        match move_queue_entry_after_other_entry(entry_id_above, entry_id).await {
+                            Ok(_) => {
+                                queue_entries_signal.restart();
+                            }
+                            Err(e) => {
+                                error!("Error moving queue entry: {}", e);
+                            }
+                        }
+                    }
+                },
+                IconMoveUp {}
+            }
+            button {
+                class: "btn btn-outline btn-xs",
+                disabled: queue_entry_id_below.is_none(),
+                onclick: move |_| async move {
+                    if let Some(entry_id_below) = queue_entry_id_below {
+                        match move_queue_entry_after_other_entry(entry_id, entry_id_below).await {
+                            Ok(_) => {
+                                queue_entries_signal.restart();
+                            }
+                            Err(e) => {
+                                error!("Error moving queue entry: {}", e);
+                            }
+                        }
+                    }
+                },
+                IconMoveDown {}
+            }
             button { class: "btn btn-primary btn-xs gap-1", IconPlay {} }
             button { class: "btn btn-info btn-xs gap-1", IconPause {} }
             button {
@@ -135,6 +168,8 @@ pub fn QueueEntryCard(props: QueueEntryCardProps) -> Element {
                     QueueEntryActions {
                         entry_id: props.queue_entry_details.queue_entry_id,
                         queue_entries_signal: props.queue_entries_signal,
+                        queue_entry_id_above: props.queue_entry_id_above,
+                        queue_entry_id_below: props.queue_entry_id_below,
                     }
                 }
                 div { class: "space-y-2 mt-3",
