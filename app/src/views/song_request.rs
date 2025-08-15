@@ -94,7 +94,7 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
                     }
                     input {
                         r#type: "text",
-                        class: "input input-bordered w-full max-w-md mt-2",
+                        class: "input input-bordered",
                         placeholder: "Name of duet partner",
                         value: "{second_singer_name().unwrap_or_default()}",
                         oninput: move |e| {
@@ -114,7 +114,7 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
                         span { class: "label-text", "Notes (Optional)" }
                     }
                     textarea {
-                        class: "input input-bordered w-full max-w-md mt-2 h-20",
+                        class: "input input-bordered",
                         placeholder: "Any special notes or requests...",
                         value: "{notes}",
                         rows: "3",

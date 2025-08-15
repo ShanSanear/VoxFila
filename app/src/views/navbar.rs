@@ -11,7 +11,10 @@ pub fn Navbar() -> Element {
                 Link { class: "btn btn-ghost text-xl", to: Route::SongSearch {}, "VoxFila" }
             }
             div { class: "navbar-center", // DaisyUI navbar-center for center alignment
-                Link { class: "btn btn-ghost", to: Route::SongQueue {}, "Song Queue" }
+                Link { class: "btn btn-ghost", to: Route::SongSearch {}, "Search songs" }
+            }
+            div { class: "navbar-center", // DaisyUI navbar-center for center alignment
+                Link { class: "btn btn-ghost", to: Route::SongQueue {}, "Queue" }
             }
             div { class: "navbar-center", // DaisyUI navbar-end for right alignment
                 Link { class: "btn btn-ghost", to: Route::SessionManagement {}, "Session Management" }
