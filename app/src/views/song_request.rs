@@ -6,6 +6,9 @@ use dioxus_logger::tracing::{debug, error, info};
 
 use shared::utils::validation::validate_inputs;
 
+use dioxus_free_icons::icons::ld_icons::{LdStickyNote, LdUser};
+use dioxus_free_icons::Icon;
+
 #[derive(PartialEq, Clone, Props)]
 pub struct SongRequestInputProps {
     id: i32,
@@ -69,7 +72,9 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
     rsx! {
         div { class: "space-y-4",
             div { class: "form-control",
+
                 label { class: "label",
+                    Icon { icon: LdUser {} }
                     span { class: "label-text", "Your Name *" }
                 }
                 input {
@@ -84,6 +89,7 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
                 }
                 div { class: "form-control",
                     label { class: "label",
+                        Icon { icon: LdUser {} }
                         span { class: "label-text flex items-center gap-2", "Duet Partner (Optional)" }
                     }
                     input {
@@ -104,6 +110,7 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
 
                 div { class: "form-control",
                     label { class: "label",
+                        Icon { icon: LdStickyNote {} }
                         span { class: "label-text", "Notes (Optional)" }
                     }
                     textarea {

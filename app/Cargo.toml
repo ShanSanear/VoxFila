@@ -28,6 +28,7 @@ tokio = { version = "1.45.1", features = [
 ], optional = true }
 
 maplit = "1.0.2"
+dioxus-free-icons = { version = "0.9.0", features = ["lucide"] }
 
 [features]
 server = ["dioxus/server", "server/db", "tokio"]

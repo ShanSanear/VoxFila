@@ -14,5 +14,11 @@
             "database": "voxfila.db"
         }
     ],
-    "rust-analyzer.trace.server": "verbose"
+    "rust-analyzer.trace.server": "verbose",
+    "tailwindCSS.experimental.classRegex": [
+        "class: \"(.*)\""
+    ],
+    "tailwindCSS.includeLanguages": {
+        "rust": "html"
+    },
 }
