@@ -226,3 +226,17 @@ pub async fn move_queue_entry(queue_entry_id: i32, new_position: i32) -> Result<
         .await?;
     Ok(())
 }
+
+#[server]
+pub async fn move_queue_entry_after_other_entry(
+    queue_entry_id: i32,
+    other_entry_id: i32,
+) -> Result<(), ServerFnError> {
+    let db = get_db().await;
+    sqlx::query(r#"SELECT 1 FROM queue_move_after($1, $2)"#)
+        .bind(queue_entry_id)
+        .bind(other_entry_id)
+        .execute(db)
+        .await?;
+    Ok(())
+}
