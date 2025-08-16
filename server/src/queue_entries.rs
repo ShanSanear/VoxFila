@@ -148,7 +148,9 @@ WHERE qe.session_id=$1;"#,
 }
 
 #[server]
-pub async fn list_pending_queue_entries() -> Result<Vec<QueueEntryDetails>, ServerFnError> {
+async fn list_queue_entries_by_status(
+    status: String,
+) -> Result<Vec<QueueEntryDetails>, ServerFnError> {
     let session = get_current_session().await?;
     let mut session_id = -1;
     match session {
@@ -181,10 +183,11 @@ FROM queue_entries qe
 JOIN singers s on qe.singer_id = s.singer_id
 LEFT JOIN singers ss on qe.second_singer_id = ss.singer_id
 JOIN songs son on qe.song_id = son.song_id
-WHERE qe.session_id=$1 AND qe.status='pending'
+WHERE qe.session_id=$1 AND qe.status=$2
 ORDER BY qe.queue_position;"#,
     )
     .bind(session_id)
+    .bind(status)
     .fetch_all(db)
     .await?;
 
@@ -194,6 +197,16 @@ ORDER BY qe.queue_position;"#,
         session_id
     );
     Ok(result)
+}
+
+#[server]
+pub async fn list_pending_queue_entries() -> Result<Vec<QueueEntryDetails>, ServerFnError> {
+    list_queue_entries_by_status("pending".to_string()).await
+}
+
+#[server]
+pub async fn list_completed_queue_entries() -> Result<Vec<QueueEntryDetails>, ServerFnError> {
+    list_queue_entries_by_status("completed".to_string()).await
 }
 
 #[server]
@@ -207,7 +220,7 @@ pub async fn remove_queue_entry(queue_entry_id: i32) -> Result<(), ServerFnError
 }
 
 #[server]
-pub async fn complete_queue_entry<'a>(queue_entry_id: i32) -> Result<(), ServerFnError> {
+pub async fn complete_queue_entry(queue_entry_id: i32) -> Result<(), ServerFnError> {
     let db = get_db().await;
     sqlx::query("UPDATE queue_entries SET status='completed' WHERE queue_entry_id=$1")
         .bind(queue_entry_id)

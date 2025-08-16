@@ -1,11 +1,12 @@
 use crate::components::QueueEntryCard;
-use ::server::list_pending_queue_entries;
+use ::server::{list_completed_queue_entries, list_pending_queue_entries};
 use dioxus::prelude::*;
 use dioxus_logger::tracing::debug;
 
 #[component]
 pub fn SongQueue() -> Element {
-    let mut queue_entries = use_resource(|| async { list_pending_queue_entries().await });
+    let queue_entries = use_resource(|| async { list_pending_queue_entries().await });
+    let completed_queue_entries = use_resource(|| async { list_completed_queue_entries().await });
     rsx! {
         div { class: "flex-1 p-4 ",
             div { class: "h-[calc(100vh-12rem)] lg:h-[calc(100vh-10rem)]",
