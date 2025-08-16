@@ -1,11 +1,12 @@
-use crate::components::{SingersCard, SongCard, SongLinksCard};
 use crate::utils::{get_ising_search_link_for_song, get_yt_search_link_for_song};
-use ::server::queue_entries::{move_queue_entry_after_other_entry, remove_queue_entry};
-use dioxus::prelude::*;
-use dioxus_free_icons::icons::ld_icons::{
-    LdChevronDown, LdChevronUp, LdExternalLink, LdPause, LdPlay, LdTrash, LdYoutube,
+use ::server::queue_entries::{
+    complete_queue_entry, move_queue_entry_after_other_entry, remove_queue_entry,
 };
-use dioxus_free_icons::Icon;
+use dioxus::prelude::*;
+
+use crate::components::icons::{
+    IconEdit, IconLinkWithText, IconMoveDown, IconMoveUp, IconPlay, IconTrash, IconYtLinkWithText,
+};
 use shared::models::QueueEntryDetails;
 
 use dioxus_logger::tracing::{debug, error, info};
@@ -17,67 +18,6 @@ pub struct QueueEntryCardProps {
     queue_entries_signal: Resource<Result<Vec<QueueEntryDetails>, ServerFnError>>,
     queue_entry_id_above: Option<i32>,
     queue_entry_id_below: Option<i32>,
-}
-
-#[component]
-fn IconMoveUp() -> Element {
-    rsx!(
-        Icon { icon: LdChevronUp }
-    )
-}
-
-#[component]
-fn IconMoveDown() -> Element {
-    rsx!(
-        Icon { icon: LdChevronDown }
-    )
-}
-
-#[component]
-fn IconPlay() -> Element {
-    rsx!(
-        Icon { icon: LdPlay }
-    )
-}
-
-#[component]
-fn IconTrash() -> Element {
-    rsx!(
-        Icon { icon: LdTrash }
-    )
-}
-
-#[component]
-fn IconPause() -> Element {
-    rsx!(
-        Icon { icon: LdPause }
-    )
-}
-
-#[component]
-fn IconLinkWithText(link: String, text: String) -> Element {
-    rsx!(
-        a {
-            class: "btn btn-outline btn-sm gap-2",
-            href: "{link}",
-            target: "_blank",
-            Icon { icon: LdExternalLink }
-            "{text}"
-        }
-    )
-}
-
-#[component]
-fn IconYtLinkWithText(link: String) -> Element {
-    rsx!(
-        a {
-            class: "btn btn-outline btn-sm gap-2",
-            href: "{link}",
-            target: "_blank",
-            Icon { icon: LdYoutube }
-            "YouTube"
-        }
-    )
 }
 
 #[component]
@@ -123,8 +63,22 @@ fn QueueEntryActions(
                 },
                 IconMoveDown {}
             }
-            button { class: "btn btn-primary btn-xs gap-1", IconPlay {} }
-            button { class: "btn btn-info btn-xs gap-1", IconPause {} }
+            button {
+                class: "btn btn-primary btn-xs gap-1",
+                onclick: move |_| async move {
+                    match complete_queue_entry(entry_id).await {
+                        Ok(_) => {
+                            queue_entries_signal.restart();
+                        }
+                        Err(e) => {
+                            error!("Error completing queue entry: {}", e);
+                        }
+                    }
+                },
+
+                IconPlay {}
+            }
+            button { class: "btn btn-secondary btn-xs gap-1", IconEdit {} }
             button {
                 class: "btn btn-error btn-xs gap-1",
                 onclick: move |_| async move {
@@ -146,6 +100,11 @@ fn QueueEntryActions(
 }
 
 #[component]
+pub fn DialogBoxEditQueueEntry(props: QueueEntryCardProps) -> Element {
+    rsx! {}
+}
+
+#[component]
 pub fn QueueEntryCard(props: QueueEntryCardProps) -> Element {
     let song = props.queue_entry_details.song.clone();
     let title = song.title;
@@ -154,9 +113,14 @@ pub fn QueueEntryCard(props: QueueEntryCardProps) -> Element {
     let second_singer_name = props.queue_entry_details.second_singer.second_singer_name;
     let yt_link = song.yturl;
     let ising_link = song.isingurl;
+    let card_body_class = if props.index == 0 {
+        "card-body bg-accent-content"
+    } else {
+        "card-body"
+    };
     rsx!(
         div { class: "card bg-base-200 shadow-md hover:shadow-lg transition-shadow",
-            div { class: "card-body",
+            div { class: card_body_class,
                 div { class: "flex items-start gap-3",
                     div { class: "flex flex-col items-center gap-1",
                         div { class: "badge badge-sm", "#{props.index + 1}. " }

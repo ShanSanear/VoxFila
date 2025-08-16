@@ -20,3 +20,5 @@ pub use session_card::SessionCard;
 
 mod song_links_card;
 pub use song_links_card::SongLinksCard;
+
+pub mod icons;
