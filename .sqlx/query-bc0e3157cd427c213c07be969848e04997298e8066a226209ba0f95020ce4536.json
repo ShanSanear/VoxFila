@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT session_id, state, songs_per_singer, current_queue_entry_id, updated_at FROM sessions WHERE state = 'active'",
+  "query": "INSERT INTO sessions (songs_per_singer, state) VALUES ($1, $2)\n        RETURNING session_id, state, songs_per_singer, current_queue_entry_id, updated_at",
   "describe": {
     "columns": [
       {
@@ -30,7 +30,10 @@
       }
     ],
     "parameters": {
-      "Left": []
+      "Left": [
+        "Int4",
+        "Varchar"
+      ]
     },
     "nullable": [
       false,
@@ -40,5 +43,5 @@
       false
     ]
   },
-  "hash": "60d8ea0023b0601bf47b6baa65d3235fd5d05e6f3cbdffa165e568346bf65167"
+  "hash": "bc0e3157cd427c213c07be969848e04997298e8066a226209ba0f95020ce4536"
 }
