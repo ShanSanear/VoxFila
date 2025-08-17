@@ -12,3 +12,4 @@ app/node_modules
 .postgres-data
 
 test*.html
+test*.rs
