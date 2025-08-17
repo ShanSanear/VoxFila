@@ -22,3 +22,6 @@ mod song_links_card;
 pub use song_links_card::SongLinksCard;
 
 pub mod icons;
+
+mod modals;
+pub use modals::*;

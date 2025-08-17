@@ -4,6 +4,8 @@ use ::server::{create_queue_entry, sessions::get_current_session, songs::get_son
 use dioxus::prelude::*;
 use dioxus_logger::tracing::{debug, error, info};
 
+use crate::components::{ErrorModal, SuccessModal};
+
 use shared::utils::validation::validate_inputs;
 
 use dioxus_free_icons::icons::ld_icons::{LdStickyNote, LdUser};
@@ -12,51 +14,6 @@ use dioxus_free_icons::Icon;
 #[derive(PartialEq, Clone, Props)]
 pub struct SongRequestInputProps {
     id: i32,
-}
-
-#[component]
-pub fn SuccessModal(open: Signal<bool>) -> Element {
-    let mut confirmed = use_signal(|| false);
-    if confirmed() {
-        use_effect(|| {
-            info!("Redirecting to song search after successful request.");
-            let nav = navigator();
-            nav.push(Route::SongSearch {});
-        });
-    }
-    rsx! {
-        dialog { class: "modal", open: "{open}",
-            div { class: "modal-box",
-                h2 { class: "text-lg font-bold", "Song Request Submitted!" }
-                p { "Your song request has been successfully submitted." }
-                button {
-                    class: "btn btn-primary",
-                    onclick: move |_| {
-                        confirmed.set(true);
-                        open.set(false);
-                    },
-                    "OK"
-                }
-            }
-        }
-    }
-}
-
-#[component]
-pub fn InputErrorModal(open: Signal<bool>, message: String) -> Element {
-    rsx! {
-        dialog { class: "modal", open: "{open}",
-            div { class: "modal-box",
-                h2 { class: "text-lg font-bold text-red-500", "Error" }
-                p { class: "text-red-500", "{message}" }
-                button {
-                    class: "btn btn-primary",
-                    onclick: move |_| open.set(false),
-                    "Close"
-                }
-            }
-        }
-    }
 }
 
 #[component]
@@ -170,8 +127,13 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
                     }
                 }
             }
-            SuccessModal { open: open_success }
-            InputErrorModal { open: error_open, message: error_message() }
+            SuccessModal {
+                open: open_success,
+                title: "Song Request Submitted!".to_string(),
+                message: "Your song request has been successfully submitted.".to_string(),
+                redirect_target: Some(Route::SongSearch {}),
+            }
+            ErrorModal { open: error_open, message: error_message() }
         }
     }
 }

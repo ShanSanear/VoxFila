@@ -3,29 +3,32 @@ use dioxus::prelude::*;
 use dioxus_logger::tracing::{debug, error, info};
 
 #[component]
-pub fn SuccessModal(mut open: Signal<bool>, redirect_target: Option<Route>) -> Element {
+pub fn SuccessModal(
+    mut open: Signal<bool>,
+    title: String,
+    message: String,
+    redirect_target: Option<Route>,
+) -> Element {
     let mut confirmed = use_signal(|| false);
     if confirmed() {
-        use_effect(|| match &redirect_target {
-            Some(redirect_target) => {
-                info!(
-                    "Redirecting to {:?} after successful request.",
-                    redirect_target
-                );
+        let redirect_target = redirect_target.clone();
+        match redirect_target {
+            Some(target) => {
+                info!("Redirecting to {:?}", target);
                 let nav = navigator();
-                nav.push(redirect_target.clone());
+                nav.push(target);
             }
-            _ => open.set(false),
-        });
+            None => open.set(false),
+        }
     }
     rsx! {
         dialog { class: "modal", open: "{open}",
             div { class: "modal-box",
-                h2 { class: "text-lg font-bold", "Song Request Submitted!" }
-                p { "Your song request has been successfully submitted." }
+                h2 { class: "text-lg font-bold", "{title}" }
+                p { "{message}" }
                 button {
                     class: "btn btn-primary",
-                    onclick: move |_| move {
+                    onclick: move |_| {
                         confirmed.set(true);
                         open.set(false);
                     },
@@ -37,7 +40,7 @@ pub fn SuccessModal(mut open: Signal<bool>, redirect_target: Option<Route>) -> E
 }
 
 #[component]
-pub fn InputErrorModal(open: Signal<bool>, message: String) -> Element {
+pub fn ErrorModal(open: Signal<bool>, message: String) -> Element {
     rsx! {
         dialog { class: "modal", open: "{open}",
             div { class: "modal-box",
