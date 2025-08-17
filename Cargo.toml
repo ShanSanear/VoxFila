@@ -6,6 +6,7 @@ members = ["app", "server", "shared"]
 dioxus = { version = "0.6", features = ["router", "fullstack"] }
 log = { version = "0.4.27" }
 dioxus-logger = { version = "0.6" }
+serde_json = "1.0.140"
 server = { path = "server" }
 shared = { path = "shared" }
 

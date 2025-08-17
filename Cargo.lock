@@ -107,6 +107,7 @@ dependencies = [
  "dioxus-logger",
  "log",
  "maplit",
+ "serde_json",
  "server",
  "shared",
  "tokio",
