@@ -9,7 +9,8 @@ use crate::views::Route;
 #[component]
 pub fn SongSearch() -> Element {
     let mut current_search = use_signal(|| String::new());
-    let songs = use_resource(move || async move { search_songs(current_search().clone()).await });
+    let songs =
+        use_resource(move || async move { search_songs(current_search().clone(), 10).await });
     let mut open_new_song_request = use_signal(|| false);
     rsx! {
         div {

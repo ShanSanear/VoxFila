@@ -5,6 +5,8 @@ use shared::models::{NewSong, SongDetails};
 
 #[cfg(feature = "db")]
 use crate::database::get_db;
+#[cfg(feature = "db")]
+use sqlx::QueryBuilder;
 
 #[server]
 pub async fn list_songs() -> Result<Vec<SongDetails>, ServerFnError> {
@@ -12,7 +14,7 @@ pub async fn list_songs() -> Result<Vec<SongDetails>, ServerFnError> {
     let db = get_db().await;
     let results = sqlx::query_as!(
         SongDetails,
-        "SELECT song_id, artist, title, yturl, isingurl FROM songs"
+        "SELECT song_id, artist, title, yturl, isingurl FROM songs ORDER BY (artist, title)"
     )
     .fetch_all(db)
     .await?;
@@ -37,7 +39,7 @@ pub async fn get_song(id: i32) -> Result<SongDetails, ServerFnError> {
 
 /// List songs where artist or title matches the query (case-insensitive, fuzzy)
 #[server]
-pub async fn search_songs(query: String) -> Result<Vec<SongDetails>, ServerFnError> {
+pub async fn search_songs(query: String, limit: i64) -> Result<Vec<SongDetails>, ServerFnError> {
     info!("Searching songs with query: {}", query);
     let db = get_db().await;
     let pattern = format!("%{}%", query);
@@ -45,15 +47,17 @@ pub async fn search_songs(query: String) -> Result<Vec<SongDetails>, ServerFnErr
     let result = if query.is_empty() {
         sqlx::query_as!(
             SongDetails,
-            "SELECT song_id, artist, title, yturl, isingurl FROM songs",
+            "SELECT song_id, artist, title, yturl, isingurl FROM songs ORDER BY (artist, title) LIMIT $1",
+            limit
         )
         .fetch_all(db)
         .await?
     } else {
         sqlx::query_as!(
             SongDetails,
-            "SELECT song_id, artist, title, yturl, isingurl FROM songs WHERE artist LIKE $1 OR title LIKE $1",
-            pattern
+            "SELECT song_id, artist, title, yturl, isingurl FROM songs WHERE $1 <% (artist || ' ' || title) ORDER BY (artist, title) LIMIT $2",
+            pattern,
+            limit
         )
         .fetch_all(db)
         .await?
@@ -71,7 +75,7 @@ pub async fn search_song_by_artist(query: String) -> Result<Vec<SongDetails>, Se
     let results = if query.is_empty() {
         sqlx::query_as!(
             SongDetails,
-            "SELECT song_id, artist, title, yturl, isingurl FROM songs"
+            "SELECT song_id, artist, title, yturl, isingurl FROM songs ORDER BY (artist, title)"
         )
         .fetch_all(db)
         .await?
@@ -108,24 +112,22 @@ pub async fn save_song(song: NewSong) -> Result<SongDetails, ServerFnError> {
 }
 
 #[server]
-pub async fn list_songs_dummy() -> Result<Vec<SongDetails>, ServerFnError> {
-    // Simulate a delay that might occur in a real database query
-    tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
+pub async fn import_songs(songs: Vec<NewSong>) -> Result<(), ServerFnError> {
+    info!("Importing songs from external source");
+    let db = get_db().await;
+    let mut query_builder = QueryBuilder::new(
+        "
+    INSERT INTO songs (artist, title, yturl, isingurl) ",
+    );
+    query_builder.push_values(songs, |mut b, song| {
+        b.push_bind(song.artist)
+            .push_bind(song.title)
+            .push_bind(song.yturl)
+            .push_bind(song.isingurl);
+    });
+    query_builder.push(" ON CONFLICT (artist, title) DO NOTHING");
+    let query = query_builder.build();
+    query.execute(db).await?;
 
-    Ok(vec![
-        SongDetails {
-            song_id: 1,
-            artist: "Dummy Artist".into(),
-            title: "Dummy Title".into(),
-            yturl: Some("https://www.youtube.com/watch?v=dQw4w9WgXcQ".into()),
-            isingurl: Some("https://www.example.com/ising/dummy".into()),
-        },
-        SongDetails {
-            song_id: 2,
-            artist: "Dummy Artist 2".into(),
-            title: "Dummy Title 2".into(),
-            yturl: Some("https://www.youtube.com/watch?v=dQw4w9WgXcQ".into()),
-            isingurl: Some("https://www.example.com/ising/dummy".into()),
-        },
-    ])
+    Ok(())
 }

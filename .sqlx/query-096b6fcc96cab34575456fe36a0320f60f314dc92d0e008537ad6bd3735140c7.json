@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT song_id, artist, title, yturl, isingurl FROM songs",
+  "query": "SELECT song_id, artist, title, yturl, isingurl FROM songs ORDER BY (artist, title)",
   "describe": {
     "columns": [
       {
@@ -40,5 +40,5 @@
       true
     ]
   },
-  "hash": "49af5016ed6a8b359598d9d3704adb2481b9c721e641056cf00486343714b035"
+  "hash": "096b6fcc96cab34575456fe36a0320f60f314dc92d0e008537ad6bd3735140c7"
 }

@@ -1,6 +1,6 @@
 {
   "db_name": "PostgreSQL",
-  "query": "SELECT song_id, artist, title, yturl, isingurl FROM songs WHERE artist LIKE $1 OR title LIKE $1",
+  "query": "SELECT song_id, artist, title, yturl, isingurl FROM songs ORDER BY (artist, title) LIMIT $1",
   "describe": {
     "columns": [
       {
@@ -31,7 +31,7 @@
     ],
     "parameters": {
       "Left": [
-        "Text"
+        "Int8"
       ]
     },
     "nullable": [
@@ -42,5 +42,5 @@
       true
     ]
   },
-  "hash": "abbf15a20bd078cac7647c861f937304a9a82901b14aee3af7f951953c2384da"
+  "hash": "1ea02ff9b4c7f41de07cd26ae8d296430142ac3ee1b74b748fde672ca4b75b3e"
 }

@@ -1,0 +1,46 @@
+{
+  "db_name": "PostgreSQL",
+  "query": "SELECT song_id, artist, title, yturl, isingurl FROM songs WHERE artist LIKE $1",
+  "describe": {
+    "columns": [
+      {
+        "ordinal": 0,
+        "name": "song_id",
+        "type_info": "Int4"
+      },
+      {
+        "ordinal": 1,
+        "name": "artist",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 2,
+        "name": "title",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 3,
+        "name": "yturl",
+        "type_info": "Text"
+      },
+      {
+        "ordinal": 4,
+        "name": "isingurl",
+        "type_info": "Text"
+      }
+    ],
+    "parameters": {
+      "Left": [
+        "Text"
+      ]
+    },
+    "nullable": [
+      false,
+      false,
+      false,
+      true,
+      true
+    ]
+  },
+  "hash": "8f77739a45108b9bdf02d002dbd26efc358d280c8168d740e14a485192add124"
+}
