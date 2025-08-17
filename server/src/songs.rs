@@ -41,13 +41,49 @@ pub async fn search_songs(query: String) -> Result<Vec<SongDetails>, ServerFnErr
     info!("Searching songs with query: {}", query);
     let db = get_db().await;
     let pattern = format!("%{}%", query);
-    let results = sqlx::query_as!(
-        SongDetails,
-        "SELECT song_id, artist, title, yturl, isingurl FROM songs WHERE artist LIKE $1 OR title LIKE $1",
-        pattern
-    )
-    .fetch_all(db)
-    .await?;
+
+    let result = if query.is_empty() {
+        sqlx::query_as!(
+            SongDetails,
+            "SELECT song_id, artist, title, yturl, isingurl FROM songs",
+        )
+        .fetch_all(db)
+        .await?
+    } else {
+        sqlx::query_as!(
+            SongDetails,
+            "SELECT song_id, artist, title, yturl, isingurl FROM songs WHERE artist LIKE $1 OR title LIKE $1",
+            pattern
+        )
+        .fetch_all(db)
+        .await?
+    };
+
+    info!("Returning {} songs", result.len());
+    Ok(result)
+}
+
+#[server]
+pub async fn search_song_by_artist(query: String) -> Result<Vec<SongDetails>, ServerFnError> {
+    info!("Searching songs by artist with query: {}", query);
+    let db = get_db().await;
+
+    let results = if query.is_empty() {
+        sqlx::query_as!(
+            SongDetails,
+            "SELECT song_id, artist, title, yturl, isingurl FROM songs"
+        )
+        .fetch_all(db)
+        .await?
+    } else {
+        sqlx::query_as!(
+            SongDetails,
+            "SELECT song_id, artist, title, yturl, isingurl FROM songs WHERE artist LIKE $1",
+            query
+        )
+        .fetch_all(db)
+        .await?
+    };
     info!("Returning {} songs", results.len());
     Ok(results)
 }
