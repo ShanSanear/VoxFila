@@ -82,7 +82,7 @@ pub async fn search_song_by_artist(query: String) -> Result<Vec<SongDetails>, Se
     } else {
         sqlx::query_as!(
             SongDetails,
-            "SELECT song_id, artist, title, yturl, isingurl FROM songs WHERE artist LIKE $1",
+            "SELECT song_id, artist, title, yturl, isingurl FROM songs WHERE artist LIKE $1 ORDER BY (artist, title)",
             query
         )
         .fetch_all(db)
