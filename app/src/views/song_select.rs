@@ -7,7 +7,7 @@ use crate::components::{SongCard, UserNewSongRequest};
 use crate::views::Route;
 
 #[component]
-pub fn SongSearch() -> Element {
+pub fn SongSelect() -> Element {
     let mut current_search = use_signal(|| String::new());
     let songs =
         use_resource(move || async move { search_songs(current_search().clone(), 10).await });
@@ -36,7 +36,7 @@ pub fn SongSearch() -> Element {
                                 div { id: "song-{song.song_id}", class: "mt-4",
                                     SongCard { song: song.clone() }
                                     Link {
-                                        to: Route::SongRequest {
+                                        to: Route::SongRequestForm {
                                             id: song.song_id,
                                         },
                                         button { class: "btn btn-primary", "Request" }

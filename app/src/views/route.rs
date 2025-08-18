@@ -1,5 +1,5 @@
 use crate::views::{
-    Navbar, SessionManagement, SongQueue, SongRequest, SongSearch, SongsList, TestComponent,
+    Navbar, SessionManagement, SongQueue, SongSelect, SongRequestForm, SongsList, TestComponent,
 };
 use dioxus::prelude::*;
 /// The Route enum is used to define the structure of internal routes in our app. All route enums need to derive
@@ -12,9 +12,9 @@ use dioxus::prelude::*;
 pub enum Route {
     #[layout(Navbar)]
         #[route("/")]
-        SongSearch {},
+        SongSelect {},
         #[route("/song-request/:id")]
-        SongRequest { id: i32 },
+        SongRequestForm { id: i32 },
         #[route("/queue")]
         SongQueue {},
         #[route("/session-management")]

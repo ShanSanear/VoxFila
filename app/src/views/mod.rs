@@ -4,11 +4,11 @@ pub use navbar::Navbar;
 mod route;
 pub use route::Route;
 
-mod song_search;
-pub use song_search::SongSearch;
+mod song_select;
+pub use song_select::SongSelect;
 
-mod song_request;
-pub use song_request::SongRequest;
+mod song_request_form;
+pub use song_request_form::SongRequestForm;
 
 mod song_queue;
 pub use song_queue::SongQueue;

@@ -7,10 +7,10 @@ pub fn Navbar() -> Element {
     rsx! {
         div { class: "navbar bg-base-100 shadow-lg px-4 mx-auto py-6 max-w-7xl",
             div { class: "navbar-start",
-                Link { class: "btn btn-ghost text-xl", to: Route::SongSearch {}, "VoxFila" }
+                Link { class: "btn btn-ghost text-xl", to: Route::SongSelect {}, "VoxFila" }
             }
             div { class: "navbar-center",
-                Link { class: "btn btn-ghost", to: Route::SongSearch {}, "Search songs" }
+                Link { class: "btn btn-ghost", to: Route::SongSelect {}, "Search songs" }
             }
             div { class: "navbar-center",
                 Link { class: "btn btn-ghost", to: Route::SongQueue {}, "Queue" }

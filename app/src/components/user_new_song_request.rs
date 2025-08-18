@@ -36,7 +36,7 @@ pub fn UserNewSongRequestDialogSuccess(
                         confirmed.set(true);
                         open.set(false);
                         parent_open.set(false);
-                        route_target.set(Some(Route::SongSearch {}));
+                        route_target.set(Some(Route::SongSelect {}));
                     },
                     "Go to Song Search"
                 }
@@ -49,7 +49,7 @@ pub fn UserNewSongRequestDialogSuccess(
                         match song_id {
                             Some(song_id) => {
                                 info!("Redirecting to song request with ID: {}", song_id);
-                                route_target.set(Some(Route::SongRequest { id: song_id }));
+                                route_target.set(Some(Route::SongRequestForm { id: song_id }));
                             }
                             None => {
                                 error!("No song ID provided!");

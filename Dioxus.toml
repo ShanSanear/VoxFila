@@ -1,5 +1,7 @@
 [application]
 
+sub-package = "app"
+
 [web.app]
 
 # HTML title tag content
@@ -19,3 +21,8 @@ script = []
 # Javascript code file
 # serve: [dev-server] only
 script = []
+
+[bundle]
+category = "Music"
+short_description = "App for KJs who don't want to rely on any particular software"
+long_description = "App for easier handling of karaoke queues without relying on any particular karaoke software"

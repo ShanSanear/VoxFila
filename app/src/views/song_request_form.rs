@@ -12,12 +12,12 @@ use dioxus_free_icons::icons::ld_icons::{LdStickyNote, LdUser};
 use dioxus_free_icons::Icon;
 
 #[derive(PartialEq, Clone, Props)]
-pub struct SongRequestInputProps {
+pub struct SongRequestFormInputsProps {
     id: i32,
 }
 
 #[component]
-pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
+pub fn SongRequestFormInputs(props: SongRequestFormInputsProps) -> Element {
     let mut singer_name = use_signal(|| String::new());
     let mut second_singer_name: Signal<Option<String>> = use_signal(|| None);
     let mut notes = use_signal(|| String::new());
@@ -121,7 +121,7 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
                         class: "btn btn-ghost",
                         onclick: move |_| {
                             let nav = navigator();
-                            nav.push(Route::SongSearch {});
+                            nav.push(Route::SongSelect {});
                         },
                         "Cancel"
                     }
@@ -131,7 +131,7 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
                 open: open_success,
                 title: "Song Request Submitted!".to_string(),
                 message: "Your song request has been successfully submitted.".to_string(),
-                redirect_target: Some(Route::SongSearch {}),
+                redirect_target: Some(Route::SongSelect {}),
             }
             ErrorModal { open: error_open, message: error_message() }
         }
@@ -139,7 +139,7 @@ pub fn SongRequestInputs(props: SongRequestInputProps) -> Element {
 }
 
 #[component]
-pub fn SongRequest(id: i32) -> Element {
+pub fn SongRequestForm(id: i32) -> Element {
     let song = use_resource(move || async move { get_song(id).await });
     rsx! {
         match &*song.read() {
@@ -151,7 +151,7 @@ pub fn SongRequest(id: i32) -> Element {
                             "Fill out the form below to add this song to the karaoke queue."
                         }
                         SongCard { song: song_details.clone() }
-                        SongRequestInputs { id }
+                        SongRequestFormInputs { id }
                     }
                 }
             }
