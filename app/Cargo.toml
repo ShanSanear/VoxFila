@@ -27,10 +27,10 @@ tokio = { version = "1.45.1", features = [
     "macros",
 ], optional = true }
 
-maplit = "1.0.2"
 dioxus-free-icons = { version = "0.9.0", features = ["lucide"] }
 url = "2.5.4"
 serde_json = { workspace = true }
+fuzzy-matcher = "0.3.7"
 
 [features]
 server = ["dioxus/server", "server/db", "tokio"]
