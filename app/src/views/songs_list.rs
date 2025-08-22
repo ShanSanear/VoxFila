@@ -132,7 +132,7 @@ pub fn ImportModal(open: Signal<bool>) -> Element {
                         confirmed.set(true);
                     },
                     "Submit"
-
+                
                 }
                 button {
                     class: "btn btn-neutral",
@@ -174,19 +174,19 @@ pub fn SongsList() -> Element {
         div { class: "h-full flex flex-col",
             div { class: "mb-4",
                 div { class: "flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4",
-                    h2 { class: "text-2xl font-bold", "All Songs" }
+                    h2 { class: "text-2xl w-1/4 font-bold", "All Songs" }
                     div { class: "form-control w-full flex items-center gap-2",
                         label { class: "label", "Songs per page:" }
                         input {
-                          class: "input input-bordered w-minimal",
+                            class: "input input-bordered w-1/12",
                             r#type: "number",
                             value: "{songs_per_page()}",
                             onchange: move |e| {
                                 songs_per_page.set(e.value().parse::<usize>().unwrap_or(15).clamp(1, 100));
-                            }
-                        },
+                            },
+                        }
                         button {
-                            class: "btn btn-info",
+                            class: "btn btn-info w-1/6",
                             onclick: move |_| {
                                 async move {
                                     open_import_modal.set(true);
@@ -194,17 +194,17 @@ pub fn SongsList() -> Element {
                             },
                             "Import songs"
                         }
-                        div { class: "relative flex-1",
-                            input {
-                                class: "input input-bordered w-full pl-10",
-                                placeholder: "Search songs...",
-                                r#type: "text",
-                                oninput: move |evt| {
-                                    local_frontend_search.set(evt.value());
-                                },
-                                value: "",
-                            }
+
+                        input {
+                            class: "input input-bordered w-1/2 pl-10",
+                            placeholder: "Search songs...",
+                            r#type: "text",
+                            oninput: move |evt| {
+                                local_frontend_search.set(evt.value());
+                            },
+                            value: "",
                         }
+                    
                     }
                 }
                 div { class: "tabs tabs-boxed overflow-x-auto flex-nowrap",
@@ -218,7 +218,9 @@ pub fn SongsList() -> Element {
                     match &*songs.read() {
                         Some(Ok(songs)) => {
                             let total_songs = songs.len();
-                            use_effect(move || total_pages.set((total_songs + songs_per_page()) / songs_per_page()));
+                            use_effect(move || {
+                                total_pages.set((total_songs + songs_per_page()) / songs_per_page())
+                            });
                             let slots = pagination_slots(current_page(), total_pages(), 2);
                             let filtered_songs = if local_frontend_search().is_empty() {
                                 songs.iter().collect::<Vec<_>>()
@@ -267,8 +269,8 @@ pub fn SongsList() -> Element {
                                             }
                                         }
                                         tbody { key: "songs-table-tbody-{current_tab()}",
-
-
+                                
+                                
                                             for (index , song) in paged_songs.iter().enumerate() {
                                                 tr { key: "song-list-{index}-{current_tab()}", class: "hover",
                                                     td { class: "text-base-content/60", "{index + 1 + (current_page()-1) * PAGE_SIZE}" }
@@ -303,8 +305,8 @@ pub fn SongsList() -> Element {
                                             }
                                         }
                                     }
-
-
+                                
+                                
                                     for slot in slots.into_iter() {
                                         match slot {
                                             Some(p) => {

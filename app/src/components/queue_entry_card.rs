@@ -111,7 +111,7 @@ pub fn QueueEntryCard(mut props: QueueEntryCardProps) -> Element {
                                     }
                                 }
                             },
-                            IconMoveUp {}
+                            "↑"
                         }
                         div { class: "badge badge-sm", "#{props.index + 1}. " }
 
@@ -135,7 +135,7 @@ pub fn QueueEntryCard(mut props: QueueEntryCardProps) -> Element {
                                     }
                                 }
                             },
-                            IconMoveDown {}
+                            "↓"
                         }
                     
                     }
@@ -150,8 +150,6 @@ pub fn QueueEntryCard(mut props: QueueEntryCardProps) -> Element {
                         QueueEntryActions {
                             entry_id: props.queue_entry_details.queue_entry_id,
                             queue_entries_signal: props.queue_entries_signal,
-                            queue_entry_id_above: props.queue_entry_id_above,
-                            queue_entry_id_below: props.queue_entry_id_below,
                         }
                     
                     }
