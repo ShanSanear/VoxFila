@@ -101,7 +101,7 @@ pub fn ImportModal(open: Signal<bool>) -> Element {
                         confirmed.set(true);
                     },
                     "Submit"
-
+                
                 }
                 button {
                     class: "btn btn-neutral",
@@ -120,6 +120,8 @@ pub fn ImportModal(open: Signal<bool>) -> Element {
 #[component]
 pub fn SongsList() -> Element {
     let current_tab = use_signal(|| "All songs".to_string());
+    let current_page = use_signal(|| 1usize);
+    let max_pages = use_signal(|| 1usize);
     let mut local_frontend_search = use_signal(|| String::new());
     let matcher = SkimMatcherV2::default();
     let mut open_import_modal = use_signal(|| false);
@@ -191,58 +193,65 @@ pub fn SongsList() -> Element {
                         }
                         tbody { key: "songs-table-tbody-{current_tab()}",
                             match &*songs.read() {
-                                Some(Ok(songs)) =>{
+                                Some(Ok(songs)) => {
                                     let filtered_songs = if local_frontend_search().is_empty() {
                                         songs.iter().collect::<Vec<_>>()
                                     } else {
                                         let lowercase_frontend_search = local_frontend_search().to_lowercase();
-                                        let mut v: Vec<_> = songs.iter().map(|song| {
-                                        let title = song.title.to_lowercase();
-                                        let artist = song.artist.to_lowercase();
-                                        let text = format!("{artist} - {title}");
-                                            let score = matcher.fuzzy_match(text.as_str(), lowercase_frontend_search.as_str()).unwrap_or(0);
-                                            (song, score)
-                                        })
-                                        .filter(|(_, score)| *score > 0)
-                                        .collect();
+                                        let mut v: Vec<_> = songs
+                                            .iter()
+                                            .map(|song| {
+                                                let title = song.title.to_lowercase();
+                                                let artist = song.artist.to_lowercase();
+                                                let text = format!("{artist} - {title}");
+                                                let score = matcher
+                                                    .fuzzy_match(
+                                                        text.as_str(),
+                                                        lowercase_frontend_search.as_str(),
+                                                    )
+                                                    .unwrap_or(0);
+                                                (song, score)
+                                            })
+                                            .filter(|(_, score)| *score > 0)
+                                            .collect();
                                         v.sort_by(|a, b| b.1.cmp(&a.1));
                                         v.into_iter().map(|(song, _)| song).take(20).collect::<Vec<_>>()
                                     };
-                                    rsx!{
-                                    for (index , song) in filtered_songs.iter().enumerate() {
-                                        tr { key: "song-list-{index}-{current_tab()}", class: "hover",
-                                            td { class: "text-base-content/60", "{index + 1}" }
-                                            td { class: "font-medium", "{song.title}" }
-                                            td { "{song.artist}" }
-                                            td {
-                                                div { class: "flex gap-2",
-                                                    match &song.yturl {
-                                                        Some(link) => rsx! {
-                                                            IconYtLinkWithText { link }
-                                                        },
-                                                        None => rsx! {
-                                                            IconYtLinkWithText { link: get_yt_search_link_for_song(song.artist.as_str(), song.title.as_str()) }
-                                                        },
-                                                    }
-                                                    match &song.isingurl {
-                                                        Some(link) => {
-                                                            rsx! {
-                                                                IconLinkWithText { link, text: "Ising".to_string() }
-                                                            }
+                                    rsx! {
+                                        for (index , song) in filtered_songs.iter().enumerate() {
+                                            tr { key: "song-list-{index}-{current_tab()}", class: "hover",
+                                                td { class: "text-base-content/60", "{index + 1}" }
+                                                td { class: "font-medium", "{song.title}" }
+                                                td { "{song.artist}" }
+                                                td {
+                                                    div { class: "flex gap-2",
+                                                        match &song.yturl {
+                                                            Some(link) => rsx! {
+                                                                IconYtLinkWithText { link }
+                                                            },
+                                                            None => rsx! {
+                                                                IconYtLinkWithText { link: get_yt_search_link_for_song(song.artist.as_str(), song.title.as_str()) }
+                                                            },
                                                         }
-                                                        None => rsx! {
-                                                            IconLinkWithText {
-                                                                link: get_ising_search_link_for_song(song.artist.as_str(), song.title.as_str()),
-                                                                text: "Ising",
+                                                        match &song.isingurl {
+                                                            Some(link) => {
+                                                                rsx! {
+                                                                    IconLinkWithText { link, text: "Ising".to_string() }
+                                                                }
                                                             }
-                                                        },
+                                                            None => rsx! {
+                                                                IconLinkWithText {
+                                                                    link: get_ising_search_link_for_song(song.artist.as_str(), song.title.as_str()),
+                                                                    text: "Ising",
+                                                                }
+                                                            },
+                                                        }
                                                     }
                                                 }
                                             }
                                         }
                                     }
-                                    }
-                                },
+                                }
                                 Some(Err(e)) => {
                                     error!("Error fetching songs: {}", e);
                                     rsx! {
