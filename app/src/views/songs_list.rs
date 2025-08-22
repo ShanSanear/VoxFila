@@ -261,15 +261,6 @@ pub fn SongsList() -> Element {
                     }
                 }
             }
-            div { class: "mt-4 text-center",
-                div { class: "stats shadow",
-                    div { class: "stat",
-                        div { class: "stat-title", "Showing" }
-                        div { class: "stat-value text-lg", "17" }
-                        div { class: "stat-desc", "of 17 songs" }
-                    }
-                }
-            }
         }
     }
 }
