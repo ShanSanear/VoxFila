@@ -28,43 +28,10 @@ fn QueueEntryActions(
     queue_entries_signal: Resource<Result<Vec<QueueEntryDetails>, ServerFnError>>,
 ) -> Element {
     rsx!(
-        div { class: "flex gap-1",
+        div { class: "p-1 card-actions justify-end",
+
             button {
-                class: "btn btn-outline btn-xs",
-                disabled: queue_entry_id_above.is_none(),
-                onclick: move |_| async move {
-                    if let Some(entry_id_above) = queue_entry_id_above {
-                        match move_queue_entry_after_other_entry(entry_id_above, entry_id).await {
-                            Ok(_) => {
-                                queue_entries_signal.restart();
-                            }
-                            Err(e) => {
-                                error!("Error moving queue entry: {}", e);
-                            }
-                        }
-                    }
-                },
-                IconMoveUp {}
-            }
-            button {
-                class: "btn btn-outline btn-xs",
-                disabled: queue_entry_id_below.is_none(),
-                onclick: move |_| async move {
-                    if let Some(entry_id_below) = queue_entry_id_below {
-                        match move_queue_entry_after_other_entry(entry_id, entry_id_below).await {
-                            Ok(_) => {
-                                queue_entries_signal.restart();
-                            }
-                            Err(e) => {
-                                error!("Error moving queue entry: {}", e);
-                            }
-                        }
-                    }
-                },
-                IconMoveDown {}
-            }
-            button {
-                class: "btn btn-primary btn-xs gap-1",
+                class: "btn btn-primary btn-xs gap-2",
                 onclick: move |_| async move {
                     match complete_queue_entry(entry_id).await {
                         Ok(_) => {
@@ -78,9 +45,9 @@ fn QueueEntryActions(
 
                 IconPlay {}
             }
-            button { class: "btn btn-secondary btn-xs gap-1", IconEdit {} }
+            button { class: "btn btn-secondary btn-xs gap-2", IconEdit {} }
             button {
-                class: "btn btn-error btn-xs gap-1",
+                class: "btn btn-error btn-xs gap-2",
                 onclick: move |_| async move {
                     debug!("Removing queue entry with ID: {entry_id}");
                     match remove_queue_entry(entry_id).await {
@@ -100,12 +67,12 @@ fn QueueEntryActions(
 }
 
 #[component]
-pub fn DialogBoxEditQueueEntry(props: QueueEntryCardProps) -> Element {
+pub fn DialogBoxEditQueueEntry(mut props: QueueEntryCardProps) -> Element {
     rsx! {}
 }
 
 #[component]
-pub fn QueueEntryCard(props: QueueEntryCardProps) -> Element {
+pub fn QueueEntryCard(mut props: QueueEntryCardProps) -> Element {
     let song = props.queue_entry_details.song.clone();
     let title = song.title;
     let artist = song.artist;
@@ -121,32 +88,76 @@ pub fn QueueEntryCard(props: QueueEntryCardProps) -> Element {
     rsx!(
         div { class: "card bg-base-200 shadow-md hover:shadow-lg transition-shadow",
             div { class: card_body_class,
-                div { class: "flex flex-row",
 
-                    div { class: "flex flex-col btn-group btn-group-vertical mt-1",
-                        button { class: "btn btn-outline btn-xs", disabled: true, "UP" }
-                        button { class: "btn btn-outline btn-xs", "DOWN" }
-                    }
-                    div { class: "flex items-start gap-3",
-
-                        div { class: "flex flex-col items-center gap-1",
-                            div { class: "badge badge-sm", "#{props.index + 1}. " }
+                div { class: "grid grid-cols-[80px_1fr] grid-rows-2",
+                    div { class: "row-span-2",
+                        button {
+                            class: "btn btn-outline btn-xs",
+                            disabled: props.queue_entry_id_above.is_none(),
+                            onclick: move |_| async move {
+                                if let Some(entry_id_above) = props.queue_entry_id_above {
+                                    match move_queue_entry_after_other_entry(
+                                            entry_id_above,
+                                            props.queue_entry_details.queue_entry_id,
+                                        )
+                                        .await
+                                    {
+                                        Ok(_) => {
+                                            props.queue_entries_signal.restart();
+                                        }
+                                        Err(e) => {
+                                            error!("Error moving queue entry: {}", e);
+                                        }
+                                    }
+                                }
+                            },
+                            IconMoveUp {}
                         }
+                        div { class: "badge badge-sm", "#{props.index + 1}. " }
 
-                        div { class: "flex-1",
+                        button {
+                            class: "btn btn-outline btn-xs",
+                            disabled: props.queue_entry_id_below.is_none(),
+                            onclick: move |_| async move {
+                                if let Some(entry_id_below) = props.queue_entry_id_below {
+                                    match move_queue_entry_after_other_entry(
+                                            props.queue_entry_details.queue_entry_id,
+                                            entry_id_below,
+                                        )
+                                        .await
+                                    {
+                                        Ok(_) => {
+                                            props.queue_entries_signal.restart();
+                                        }
+                                        Err(e) => {
+                                            error!("Error moving queue entry: {}", e);
+                                        }
+                                    }
+                                }
+                            },
+                            IconMoveDown {}
+                        }
+                    
+                    }
+                    div { class: "grid grid-cols-[2fr_1fr]",
+
+                        div {
                             h3 { class: "card-title text-base truncate", "{title}" }
                             p { class: "text-base-content/70 truncate", "{artist}" }
                         }
+
+
                         QueueEntryActions {
                             entry_id: props.queue_entry_details.queue_entry_id,
                             queue_entries_signal: props.queue_entries_signal,
                             queue_entry_id_above: props.queue_entry_id_above,
                             queue_entry_id_below: props.queue_entry_id_below,
                         }
+                    
                     }
-                    div { class: "space-y-2 mt-3",
-                        div { class: "flex items-center gap-2 flex-wrap",
-                            span { class: "text-xs", "Requested by:" }
+                    div { class: "grid grid-cols-2",
+                        div { class: "",
+                            span { class: "text-xs pr-2", "Requested by:" }
                             div { class: "badge badge-secondary badge-sm", "{singer_name}" }
                             match second_singer_name {
                                 Some(name) => rsx! {
@@ -155,32 +166,31 @@ pub fn QueueEntryCard(props: QueueEntryCardProps) -> Element {
                                 None => rsx! {},
                             }
                         }
-                    }
-                    div { class: "card-actions justify-start mt-3",
-                        match yt_link {
-                            Some(link) => rsx! {
-                                IconYtLinkWithText { link }
-                            },
-                            None => rsx! {
-                                IconYtLinkWithText { link: get_yt_search_link_for_song(artist.as_str(), title.as_str()) }
-                            },
-                        }
-                        match ising_link {
-                            Some(link) => rsx! {
-                                IconLinkWithText { link, text: "Ising" }
-                            },
-                            None => {
-                                rsx! {
-                                    IconLinkWithText {
-                                        link: get_ising_search_link_for_song(artist.as_str(), title.as_str()),
-                                        text: "Ising",
+                        div { class: "card-actions justify-end",
+                            match yt_link {
+                                Some(link) => rsx! {
+                                    IconYtLinkWithText { link }
+                                },
+                                None => rsx! {
+                                    IconYtLinkWithText { link: get_yt_search_link_for_song(artist.as_str(), title.as_str()) }
+                                },
+                            }
+                            match ising_link {
+                                Some(link) => rsx! {
+                                    IconLinkWithText { link, text: "Ising" }
+                                },
+                                None => {
+                                    rsx! {
+                                        IconLinkWithText {
+                                            link: get_ising_search_link_for_song(artist.as_str(), title.as_str()),
+                                            text: "Ising",
+                                        }
                                     }
                                 }
                             }
                         }
                     }
                 }
-            
             }
         }
     )

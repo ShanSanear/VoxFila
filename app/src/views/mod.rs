@@ -19,5 +19,7 @@ pub use session_management::SessionManagement;
 mod test;
 pub use test::TestComponent;
 
+mod singers_table;
 mod songs_list;
+
 pub use songs_list::SongsList;

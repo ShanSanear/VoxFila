@@ -8,6 +8,7 @@ pub struct SessionCardProps {
 
 #[component]
 pub fn SessionCard(props: SessionCardProps) -> Element {
+    let songs_per_singer = props.session.songs_per_singer;
     rsx!(
         div { class: "card w-full max-w-md bg-base-100 shadow-xl my-2",
             div { class: "card-body",

@@ -40,6 +40,7 @@ pub fn SongQueue() -> Element {
                                     if entries.is_empty() {
                                         div { class: "mt-4 text-lg", "No queue entries found." }
                                     }
+
                                 }
                             }
                             Some(Err(e)) => {
