@@ -20,6 +20,8 @@ Operator MUST have a way to "merge" multiple people into one, to prevent (accide
 
 Operator MUST have a way to edit given queue entry - be it by changing who is singing or by changing song on the fly
 
+Operator MUST have a way to switch two entries
+
 Operator MUST have a way to change queue order even after automation takes place - in case given person is not available
 
 Operator MUST have a way to disable given person - in case they leave the venue
@@ -73,3 +75,5 @@ App MAY show operator QR code to show to users
 App MAY show links to other webpages to let users and operators known about author and websites/programs they work with
 
 App MAY require some code to access the UI to prevent outside ingerention - such as `?key=X` parameter in URL that would be provided
+
+App MAY be able to handle YT playlists as an input
