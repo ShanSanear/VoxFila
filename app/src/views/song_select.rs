@@ -1,8 +1,9 @@
 use ::server::songs::search_songs;
+
+use crate::components::icons::IconPlay;
+use crate::components::{SongCard, UserNewSongRequest};
 use dioxus::prelude::*;
 use dioxus_logger::tracing::debug;
-
-use crate::components::{SongCard, UserNewSongRequest};
 
 use crate::views::Route;
 
@@ -14,6 +15,7 @@ pub fn SongSelect() -> Element {
     let mut open_new_song_request = use_signal(|| false);
     rsx! {
         div {
+            h1 { class: "text-3xl font-bold mb-4", "Select a song you want to sing" }
             input {
                 id: "song-search-input",
                 class: "input input-bordered w-full max-w-xl",
@@ -33,13 +35,18 @@ pub fn SongSelect() -> Element {
                     Some(Ok(songs_list)) => {
                         rsx! {
                             for song in songs_list.iter() {
-                                div { id: "song-{song.song_id}", class: "mt-4",
-                                    SongCard { song: song.clone() }
-                                    Link {
-                                        to: Route::SongRequestForm {
-                                            id: song.song_id,
-                                        },
-                                        button { class: "btn btn-primary", "Request" }
+                                div { id: "song-{song.song_id}", class: "card-body",
+                                    div { class: "flex items-center justify-between",
+                                        SongCard { song: song.clone() }
+                                        Link {
+                                            to: Route::SongRequestForm {
+                                                id: song.song_id,
+                                            },
+                                            button { class: "btn btn-primary",
+                                                IconPlay {}
+                                                "Request"
+                                            }
+                                        }
                                     }
                                 }
                             }

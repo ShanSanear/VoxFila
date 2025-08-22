@@ -49,7 +49,12 @@ pub fn UserNewSongRequestDialogSuccess(
                         match song_id {
                             Some(song_id) => {
                                 info!("Redirecting to song request with ID: {}", song_id);
-                                route_target.set(Some(Route::SongRequestForm { id: song_id }));
+                                route_target
+                                    .set(
+                                        Some(Route::SongRequestForm {
+                                            id: song_id,
+                                        }),
+                                    );
                             }
                             None => {
                                 error!("No song ID provided!");
@@ -77,7 +82,7 @@ pub fn UserNewSongRequest(open: Signal<bool>) -> Element {
     rsx! {
         dialog { class: "modal", open: "{open}",
             div { class: "modal-box",
-                h2 { class: "text-lg font-bold", "Song Request Submitted!" }
+                h2 { class: "text-lg font-bold", "Submit new song" }
                 input {
                     class: "input input-bordered w-full max-w-xs",
                     placeholder: "Enter song name",
@@ -118,33 +123,42 @@ pub fn UserNewSongRequest(open: Signal<bool>) -> Element {
                         }
                     },
                 }
-                button {
-                    class: "btn btn-primary mt-4",
-                    onclick: move |_| {
-                        async move {
-                            let new_song = NewSong {
-                                artist: song_artist(),
-                                title: song_title(),
-                                yturl: yturl(),
-                                isingurl: isingurl(),
-                            };
-                            if !new_song.validate() {
-                                error!("Invalid song request data.");
-                                open_dialog.set(false);
-                            } else {
-                                match save_song(new_song).await {
-                                    Ok(song_details) => {
-                                        song_id.set(Some(song_details.song_id));
-                                        open_dialog.set(true);
-                                    }
-                                    Err(e) => {
-                                        error!("Error saving song: {}", e);
-                                    }
+                div {
+                    button {
+                        class: "btn btn-primary mt-4",
+                        onclick: move |_| {
+                            async move {
+                                let new_song = NewSong {
+                                    artist: song_artist(),
+                                    title: song_title(),
+                                    yturl: yturl(),
+                                    isingurl: isingurl(),
                                 };
+                                if !new_song.validate() {
+                                    error!("Invalid song request data.");
+                                    open_dialog.set(false);
+                                } else {
+                                    match save_song(new_song).await {
+                                        Ok(song_details) => {
+                                            song_id.set(Some(song_details.song_id));
+                                            open_dialog.set(true);
+                                        }
+                                        Err(e) => {
+                                            error!("Error saving song: {}", e);
+                                        }
+                                    };
+                                }
                             }
-                        }
-                    },
-                    "Submit"
+                        },
+                        "Submit"
+                    }
+                    button {
+                        class: "btn btn-error mt-4",
+                        onclick: move |_| {
+                            open.set(false);
+                        },
+                        "Cancel"
+                    }
                 }
                 UserNewSongRequestDialogSuccess {
                     open: open_dialog,

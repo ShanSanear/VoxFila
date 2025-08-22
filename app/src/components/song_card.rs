@@ -9,7 +9,9 @@ pub struct SongCardProps {
 #[component]
 pub fn SongCard(props: SongCardProps) -> Element {
     rsx!(
-        h2 { class: "card-title mb-1", "{props.song.title}" }
-        p { class: "text-sm text-base-content mb-1", "{props.song.artist}" }
+        div { class: "flex-1",
+            h2 { class: "card-title text-lg", "{props.song.title}" }
+            p { class: "text-base-content/70", "{props.song.artist}" }
+        }
     )
 }

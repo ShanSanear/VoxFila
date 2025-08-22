@@ -132,7 +132,7 @@ pub fn ImportModal(open: Signal<bool>) -> Element {
                         confirmed.set(true);
                     },
                     "Submit"
-                
+
                 }
                 button {
                     class: "btn btn-neutral",
@@ -151,6 +151,7 @@ pub fn ImportModal(open: Signal<bool>) -> Element {
 #[component]
 pub fn SongsList() -> Element {
     let current_tab = use_signal(|| "All songs".to_string());
+    let mut songs_per_page = use_signal(|| 15usize);
     let mut current_page = use_signal(|| 1usize);
     let mut total_pages = use_signal(|| 1usize);
     let mut local_frontend_search = use_signal(|| String::new());
@@ -159,8 +160,6 @@ pub fn SongsList() -> Element {
     //TODO can this be done without doing mut?
     let mut possible_tabs = vec!["All songs".to_string()];
     possible_tabs.extend(ASCII_UPPER.iter().map(|c| c.to_string()));
-    //TODO need to add paging and limitation of the number of elements being returned, otherwise we could have HUGE page
-    // But it might be more efficient to load ALL songs of given page in memory anyway and only then do the pagination
     let songs = use_resource(move || async move {
         let search_query = if current_tab() == "All songs" {
             "".to_string()
@@ -176,7 +175,16 @@ pub fn SongsList() -> Element {
             div { class: "mb-4",
                 div { class: "flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4",
                     h2 { class: "text-2xl font-bold", "All Songs" }
-                    div { class: "form-control w-full max-w-md flex items-center gap-2",
+                    div { class: "form-control w-full flex items-center gap-2",
+                        label { class: "label", "Songs per page:" }
+                        input {
+                          class: "input input-bordered w-minimal",
+                            r#type: "number",
+                            value: "{songs_per_page()}",
+                            onchange: move |e| {
+                                songs_per_page.set(e.value().parse::<usize>().unwrap_or(15).clamp(1, 100));
+                            }
+                        },
                         button {
                             class: "btn btn-info",
                             onclick: move |_| {
@@ -210,7 +218,7 @@ pub fn SongsList() -> Element {
                     match &*songs.read() {
                         Some(Ok(songs)) => {
                             let total_songs = songs.len();
-                            use_effect(move || total_pages.set((total_songs + PAGE_SIZE) / PAGE_SIZE));
+                            use_effect(move || total_pages.set((total_songs + songs_per_page()) / songs_per_page()));
                             let slots = pagination_slots(current_page(), total_pages(), 2);
                             let filtered_songs = if local_frontend_search().is_empty() {
                                 songs.iter().collect::<Vec<_>>()
@@ -259,8 +267,8 @@ pub fn SongsList() -> Element {
                                             }
                                         }
                                         tbody { key: "songs-table-tbody-{current_tab()}",
-                                
-                                
+
+
                                             for (index , song) in paged_songs.iter().enumerate() {
                                                 tr { key: "song-list-{index}-{current_tab()}", class: "hover",
                                                     td { class: "text-base-content/60", "{index + 1 + (current_page()-1) * PAGE_SIZE}" }
@@ -295,8 +303,8 @@ pub fn SongsList() -> Element {
                                             }
                                         }
                                     }
-                                
-                                
+
+
                                     for slot in slots.into_iter() {
                                         match slot {
                                             Some(p) => {

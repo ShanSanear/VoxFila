@@ -10,7 +10,7 @@ pub fn Navbar() -> Element {
                 Link { class: "btn btn-ghost text-xl", to: Route::SongSelect {}, "VoxFila" }
             }
             div { class: "navbar-center",
-                Link { class: "btn btn-ghost", to: Route::SongSelect {}, "Search songs" }
+                Link { class: "btn btn-ghost", to: Route::SongSelect {}, "Select song" }
             }
             div { class: "navbar-center",
                 Link { class: "btn btn-ghost", to: Route::SongQueue {}, "Queue" }
