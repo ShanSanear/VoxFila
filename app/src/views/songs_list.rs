@@ -132,7 +132,7 @@ pub fn ImportModal(open: Signal<bool>) -> Element {
                         confirmed.set(true);
                     },
                     "Submit"
-
+                
                 }
                 button {
                     class: "btn btn-neutral",
@@ -205,7 +205,7 @@ pub fn SongsList() -> Element {
                     }
                 }
             }
-            div { class: "flex-1 overflow-hidden",
+            div { class: "flex-1 overflow-y-auto overflow-x-auto",
                 div { class: "",
                     match &*songs.read() {
                         Some(Ok(songs)) => {
@@ -259,8 +259,8 @@ pub fn SongsList() -> Element {
                                             }
                                         }
                                         tbody { key: "songs-table-tbody-{current_tab()}",
-
-
+                                
+                                
                                             for (index , song) in paged_songs.iter().enumerate() {
                                                 tr { key: "song-list-{index}-{current_tab()}", class: "hover",
                                                     td { class: "text-base-content/60", "{index + 1 + (current_page()-1) * PAGE_SIZE}" }
@@ -295,8 +295,8 @@ pub fn SongsList() -> Element {
                                             }
                                         }
                                     }
-
-
+                                
+                                
                                     for slot in slots.into_iter() {
                                         match slot {
                                             Some(p) => {
